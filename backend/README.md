@@ -29,5 +29,5 @@ clashing with any other python packages and issues on your local account. If you
 cd backend
 # on your local system this may just be pip and python
 pip3 install -r requirements.txt
-python3 app.py
+python3 run.py
 ```
