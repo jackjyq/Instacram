@@ -296,7 +296,7 @@ class Feed(Resource):
         following.append(p)
         all_posts = db.raw(q,following)
         all_posts = [format_post(row) for row in all_posts]
-        all_posts.sort(reverse=True,key=lambda x: int(x["meta"]["published"]))
+        all_posts.sort(reverse=True,key=lambda x: float(x["meta"]["published"]))
         return {
             'posts': all_posts
         }

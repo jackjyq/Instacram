@@ -24,7 +24,7 @@ Some of the skills/concepts this assignment aims to test (and build upon):
 
 ## API
 
-The backend server will be where you'll be getting your data. Don't touch the code in the backend; although we've provided the source, 
+The backend server will be where you'll be getting your data. Don't touch the code in the backend; although we've provided the source,
 it's meant to be a black box. Final testing will be done with our own backend. Use the instructions provided in the backend/README.md
 to get it started.
 
@@ -36,7 +36,7 @@ Your site should be compatible with 'modern' Chrome, Safari, and Mozilla browser
 We will assume your browser has JavaScript enabled, and supports ES6 syntax.
 
 ## Restrictions
-You cannot use more than _minimal_ amounts of external JavaScript. Do not use NPM except to 
+You cannot use more than _minimal_ amounts of external JavaScript. Do not use NPM except to
 install the helper development libraries. We will allow you to use CSS from external sources as long as it properly attributed.
 
 ## Getting Started
@@ -62,7 +62,7 @@ Once logged in, the user is presented with the home page which for now can be a 
 An option to register for "Instacram" is presented on the login page allowing the user to sign up to the service.
 This for now updates the internal state object described above.
 
-**Feed Interface** 
+**Feed Interface**
 
 The application should present a "feed" of user content on the home page derived from the sample feed.json provided.
 The posts should be displayed in reverse chronological order (most recent posts first). You can hardcode how this works for
@@ -113,8 +113,7 @@ Users can page between sets of results in the feed using the position token with
 Note users can ignore this if they properly implement Level 3's Infinite Scroll.
 
 **Profile**
-Users can see their own profile information such as username, number of posts, number of likes, profile pic.
-get this information from (`GET /user`)
+Users can see their own profile information such as username, number of posts, sum of likes they received on all their posts, etc. You may choose to utilise the information from the api in more creative ways such as displaying their most liked post etc. Get this information from (GET /user)
 
 ## Level 3
 Level 3 focuses on more advanced features that will take time to implement and will
@@ -122,7 +121,7 @@ involve a more rigourously designed app to execute.
 
 **Infinite Scroll**
 Instead of pagination, users an infinitely scroll through results. For infinite scroll to be
-properly implemented you need to progressively load posts as you scroll. 
+properly implemented you need to progressively load posts as you scroll.
 
 **Comments**
 Users can write comments on "posts" via (`POST post/comment`)
@@ -134,11 +133,11 @@ update without requiring a page reload/refresh.
 **Update Profile**
 Users can update their personal profile via (`PUT /user`) E.g:
 * Update email address
-* Update their profile picture
 * Update password
+* Update name
 
 **User Pages**
-Let a user click on a user's name/picture from a post and see a page with the users name, profile pic, and other info.
+Let a user click on a user's name/picture from a post and see a page with the users name, and other info.
 The user should also see on this page all posts made by that person.
 The user should be able to see their own page as well.
 
@@ -155,7 +154,7 @@ Let a user update a post they made or delete it via (`DELETE /post`) or (`PUT /p
 ## Level 4
 
 **Slick UI**
-The user interface looks good, is performant, makes logical sense, and is usable. 
+The user interface looks good, is performant, makes logical sense, and is usable.
 
 **Push Notifications**
 Users can receive push notifications when a user they follow posts an image. Notification can be accessed at (`GET /latest`)
