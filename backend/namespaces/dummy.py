@@ -217,21 +217,31 @@ class Comment(Resource):
             'message': 'success'
         }
 
-
 @dummy.route('/user', strict_slashes=False)
 class User(Resource):
     @dummy.response(200, 'Success', user_details)
     @dummy.response(400, 'Malformed Request')
     @dummy.param('id','Id of user to get information for (defaults to logged in user)')
+    @dummy.param('username','username of user to get information for (defaults to logged in user)')
     @dummy.doc(description='''
         Identical to GET /user but doesn't require any authentication
         Allows you to act as a "Anon" user.
     ''')
     def get(self):
         u = get_dummy_user()
-        u_id = int(request.args.get('id',u[0]))
-        if not db.exists('USER').where(id=u_id):
-            abort(400,'Malformed Request')
+        u_id = request.args.get('id',None)
+        username = request.args.get('username',None)
+
+        if u_id or username:
+            if u_id and db.exists("USER").where(id=u_id):
+                u_id = int(u_id)
+            elif username and db.exists("USER").where(username=username):
+                u_id = int(db.select("USER").where(username=username).execute()[0])
+            else:
+                abort(400,'Malformed Request')
+        else:
+            u_id = int(u[0])
+
         u = db.select('USER').where(id=u_id).execute()
         u_username = u[1]
 
