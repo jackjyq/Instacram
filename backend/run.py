@@ -1,6 +1,6 @@
 import os
 database_dir = os.path.join('db')
-database_file = os.path.join(database_dir, 'test3.sqlite3')
+database_file = os.path.join(database_dir, 'test.sqlite3')
 if not os.path.exists(database_dir):
     print('Creating', database_dir)
     os.mkdir(database_dir)
