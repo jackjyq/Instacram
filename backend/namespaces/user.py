@@ -171,7 +171,7 @@ class UnFollow(Resource):
     def put(self):
         u = authorize(request)
         u_id = int(u[0])
-        following = text_list_to_set(u[4])
+        following = text_list_to_set(u[4],process_f=lambda x:int(x))
         to_follow = request.args.get('username',None)
         if to_follow == u[1]:
             abort(400,'Malformed Request')
