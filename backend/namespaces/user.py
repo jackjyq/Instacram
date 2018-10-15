@@ -38,7 +38,7 @@ class User(Resource):
             elif username and db.exists("USER").where(username=username):
                 u_id = int(db.select("USER").where(username=username).execute()[0])
             else:
-                abort(400,'Malformed Request')
+                abort(400, "Expected 'id' or 'username' query paremeter")
         else:
             u_id = int(u[0])
 
@@ -80,9 +80,9 @@ class User(Resource):
         safe = {}
         valid_keys = [k for k in j.keys() if k in allowed_keys]
         if len(valid_keys) < 1:
-            abort(400, 'Malformed request')
+            abort(400, 'Expected at least one field to change')
         if "password" in valid_keys and j["password"] == "":
-            abort(400, 'Malformed request')
+            abort(400, 'Password cannot be empty')
         for k in valid_keys:
             safe[k] = j[k]
         db.update('USER').set(**safe).where(id=u_id).execute()
@@ -131,6 +131,7 @@ class Follow(Resource):
     @user.response(200, 'Success')
     @user.response(403, 'Invalid Auth Token')
     @user.response(400, 'Malformed Request')
+    @user.response(404, 'User Not Found')
     @user.expect(auth_details)
     @user.param('username','username of person to follow')
     @user.doc(description='''
@@ -143,10 +144,12 @@ class Follow(Resource):
         u_id = int(u[0])
         follow_list = text_list_to_set(u[4],process_f=lambda x: int(x))
         to_follow = request.args.get('username',None)
-        if to_follow == None or not db.exists('USER').where(username=to_follow):
-            abort(400,'Malformed Request')
+        if to_follow == None:
+            abort(400, "Expected 'username' query parameter")
+        if not db.exists('USER').where(username=to_follow):
+            abort(404, 'User Not Found')
         if to_follow == u[1]:
-            abort(400,'Malformed Request')
+            abort(400, "Sorry, you can't follow yourself.")
         to_follow = db.select('USER').where(username=to_follow).execute()[0]
         if to_follow not in follow_list:
             db.raw('UPDATE USERS SET FOLLOWED_NUM = FOLLOWED_NUM + 1 WHERE ID = ?',[to_follow])
@@ -174,9 +177,11 @@ class UnFollow(Resource):
         following = text_list_to_set(u[4],process_f=lambda x:int(x))
         to_follow = request.args.get('username',None)
         if to_follow == u[1]:
-            abort(400,'Malformed Request')
-        if to_follow == None or not db.exists('USER').where(username=to_follow):
-            abort(400,'Malformed Request Or Unknown username')
+            abort(400,"You can't unfollow yourself either.")
+        if to_follow == None:
+            abort(400, "Expected 'username' query parameter")
+        if not db.exists('USER').where(username=to_follow):
+            abort(404,'User Not Found')
         to_follow = db.select('USER').where(username=to_follow).execute()[0]
         if to_follow in following:
             db.raw('UPDATE USERS SET FOLLOWED_NUM = FOLLOWED_NUM - 1 WHERE ID = ?',[to_follow])
