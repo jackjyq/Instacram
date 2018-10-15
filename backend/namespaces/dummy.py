@@ -51,6 +51,7 @@ class Dummy_Post(Resource):
 
     @dummy.response(200, 'Success')
     @dummy.response(400, 'Malformed Request')
+    @dummy.response(404, 'Post Not Found')
     @dummy.param('id','the id of the post to update')
     @dummy.expect(new_post_details)
     @dummy.doc(description='''
@@ -59,14 +60,16 @@ class Dummy_Post(Resource):
     ''')
     def put(self):
         j = request.json
-        id = request.args.get('id',None)
         u = get_dummy_user()
         u_username = u[1]
-        if not j or not id:
+        try:
+            id = int(request.args.get('id',None))
+        except:
             abort(400, 'Malformed request')
-        id = int(id)
+        if not j:
+            abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
-            abort(400, 'Malformed request')
+            abort(404, 'Post Not Found')
         # check the logged in user made this post
         post_author = db.select('POST').where(id=id).execute()[1]
         if u[1] != post_author:
@@ -87,7 +90,8 @@ class Dummy_Post(Resource):
         }
 
     @dummy.response(200, 'Success')
-    @dummy.response(400, 'Missing Username/Password')
+    @dummy.response(400, 'Malformed Request')
+    @dummy.response(404, 'Post Not Found')
     @dummy.param('id','the id of the post to delete')
     @dummy.doc(description='''
         Identical to DELETE /post but does not require any authentication
@@ -95,12 +99,12 @@ class Dummy_Post(Resource):
     ''')
     def delete(self):
         u = get_dummy_user()
-        id = request.args.get('id',None)
-        if not id:
-            abort(400,'Malformed Request')
-        id = int(id)
+        try:
+            id = int(request.args.get('id',None))
+        except:
+            abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
-            abort(400,'Malformed Request')
+            abort(404,'Post Not Found')
         p = db.select('POST').where(id=id).execute()
         if p[1] != u[1]:
             abort(403,'You Are Unauthorized To Make That Request')
@@ -111,7 +115,8 @@ class Dummy_Post(Resource):
             'message': 'success'
         }
     @dummy.response(200, 'Success',post_details)
-    @dummy.response(400, 'Missing Username/Password')
+    @dummy.response(400, 'Malformed Request')
+    @dummy.response(404, 'Post Not Found')
     @dummy.param('id','the id of the post to fetch')
     @dummy.doc(description='''
         Identical to GET /post but doesn't require any authentication
@@ -119,19 +124,20 @@ class Dummy_Post(Resource):
     ''')
     def get(self):
         u = get_dummy_user()
-        id = request.args.get('id',None)
-        if not id:
-            abort(400,'Malformed Request')
-        id =int(id)
+        try:
+            id = int(request.args.get('id',None))
+        except:
+            abort(400, 'Malformed request')
         p = db.select('POST').where(id=id).execute()
         if not p:
-            abort(400,'Malformed Request')
+            abort(404,'Post Not Found')
         return format_post(p)
 
 @dummy.route('/post/like', strict_slashes=False)
 class Like(Resource):
     @dummy.response(200, 'Success')
     @dummy.response(400, 'Malformed Request')
+    @dummy.response(404, 'Post Not Found')
     @dummy.param('id','the id of the post to like')
     @dummy.doc(description='''
         Identical to PUT /post/list but doesn't require any authentication
@@ -139,12 +145,12 @@ class Like(Resource):
     ''')
     def put(self):
         u = get_dummy_user()
-        id = request.args.get('id',None)
-        if not id:
+        try:
+            id = int(request.args.get('id',None))
+        except:
             abort(400, 'Malformed request')
-        id = int(id)
         if not db.exists('POST').where(id=id):
-            abort(400, 'Malformed request')
+            abort(404, 'Post Not Found')
 
         p = db.select('POST').where(id=id).execute()
         likes = text_list_to_set(p[4],process_f=lambda x:int(x))
@@ -159,6 +165,7 @@ class Like(Resource):
 class Unlike(Resource):
     @dummy.response(200, 'Success')
     @dummy.response(400, 'Malformed Request')
+    @dummy.response(404, 'Post Not Found')
     @dummy.param('id','the id of the post to unlike')
     @dummy.doc(description='''
         Identical to PUT /post/unlike but doesn't require any authentication
@@ -166,12 +173,12 @@ class Unlike(Resource):
     ''')
     def put(self):
         u = get_dummy_user()
-        id = request.args.get('id',None)
-        if not id:
+        try:
+            id = int(request.args.get('id',None))
+        except:
             abort(400, 'Malformed request')
-        id = int(id)
         if not db.exists('POST').where(id=id):
-            abort(400, 'Malformed request')
+            abort(404, 'Post Not Found')
         p = db.select('POST').where(id=id).execute()
         likes = text_list_to_set(p[4],process_f=lambda x: int(x))
         likes.discard(u[0])
@@ -185,6 +192,7 @@ class Unlike(Resource):
 class Comment(Resource):
     @dummy.response(200, 'Success')
     @dummy.response(400, 'Malformed Request')
+    @dummy.response(404, 'Post Not Found')
     @dummy.param('id','the id of the post to comment on')
     @dummy.expect(comment_details)
     @dummy.doc(description='''
@@ -194,12 +202,14 @@ class Comment(Resource):
     def put(self):
         u = get_dummy_user()
         j = request.json
-        id = request.args.get('id',None)
-        if not id or not j:
+        try:
+            id = int(request.args.get('id',None))
+        except:
             abort(400, 'Malformed request')
-        id = int(id)
+        if not j:
+            abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
-            abort(400, 'Malformed request')
+            abort(404, 'Post Not Found')
         (comment,) = unpack(j,'comment')
         if comment == "":
             abort(400, 'Malformed request')
