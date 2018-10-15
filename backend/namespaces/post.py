@@ -57,7 +57,7 @@ class Post(Resource):
 
     @posts.response(200, 'Success')
     @posts.response(403, 'Invalid Auth Token / Unauthorized to edit Post')
-    @posts.response(400, 'Malformed Request')
+    @posts.response(400, 'Malformed Request / Post Not Found')
     @posts.param('id','the id of the post to update')
     @posts.expect(auth_details,new_post_details)
     @posts.doc(description='''
@@ -81,7 +81,7 @@ class Post(Resource):
         if not j or not id:
             abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
-            abort(400, 'Malformed request')
+            abort(400, 'Post Node Found')
         # check the logged in user made this post
         post_author = db.select('POST').where(id=id).execute()[1]
         if u[1] != post_author:
@@ -102,7 +102,7 @@ class Post(Resource):
         }
 
     @posts.response(200, 'Success')
-    @posts.response(400, 'Missing Username/Password')
+    @posts.response(400, 'Malformed Request / Post Not Found')
     @posts.response(403, 'Invalid Auth Token')
     @posts.expect(auth_details)
     @posts.param('id','the id of the post to delete')
@@ -124,7 +124,7 @@ class Post(Resource):
         if not id:
             abort(400,'Malformed Request')
         if not db.exists('POST').where(id=id):
-            abort(400,'Malformed Request')
+            abort(400,'Post Not Found')
         p = db.select('POST').where(id=id).execute()
         if p[1] != u[1]:
             abort(403,'You Are Unauthorized To Make That Request')
@@ -135,7 +135,7 @@ class Post(Resource):
             'message': 'success'
         }
     @posts.response(200, 'Success',post_details)
-    @posts.response(400, 'Missing Username/Password')
+    @posts.response(400, 'Malformed Request / Post Not Found')
     @posts.response(403, 'Invalid Auth Token')
     @posts.expect(auth_details)
     @posts.param('id','the id of the post to fetch')
@@ -162,14 +162,14 @@ class Post(Resource):
             abort(400, 'Malformed request')
         p = db.select('POST').where(id=id).execute()
         if not p:
-            abort(400,'Malformed Request')
+            abort(400,'Post Not Found')
         return format_post(p)
 
 @posts.route('/like', strict_slashes=False)
 class Like(Resource):
     @posts.response(200, 'Success')
     @posts.response(403, 'Invalid Auth Token')
-    @posts.response(400, 'Malformed Request')
+    @posts.response(400, 'Malformed Request / Post Not Found')
     @posts.param('id','the id of the post to like')
     @posts.expect(auth_details)
     @posts.doc(description='''
@@ -187,7 +187,7 @@ class Like(Resource):
         except:
             abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
-            abort(400, 'Malformed request')
+            abort(400, 'Post Not Found')
         p = db.select('POST').where(id=id).execute()
         likes = text_list_to_set(p[4],process_f=lambda x:int(x))
         likes.add(u[0])
@@ -201,7 +201,7 @@ class Like(Resource):
 class Unlike(Resource):
     @posts.response(200, 'Success')
     @posts.response(403, 'Invalid Auth Token')
-    @posts.response(400, 'Malformed Request')
+    @posts.response(400, 'Malformed Request / Post Not Found')
     @posts.param('id','the id of the post to unlike')
     @posts.expect(auth_details)
     @posts.doc(description='''
@@ -219,7 +219,7 @@ class Unlike(Resource):
         except:
             abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
-            abort(400, 'Malformed request')
+            abort(400, 'Post Not Found')
         p = db.select('POST').where(id=id).execute()
         likes = text_list_to_set(p[4],process_f=lambda x: int(x))
         likes.discard(u[0])
@@ -233,7 +233,7 @@ class Unlike(Resource):
 class Comment(Resource):
     @posts.response(200, 'Success')
     @posts.response(403, 'Invalid Auth Token')
-    @posts.response(400, 'Malformed Request')
+    @posts.response(400, 'Malformed Request / Post Not Found')
     @posts.param('id','the id of the post to comment on')
     @posts.expect(auth_details,comment_details)
     @posts.doc(description='''
@@ -255,7 +255,7 @@ class Comment(Resource):
         if not j:
             abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
-            abort(400, 'Malformed request')
+            abort(400, 'Post Not Found')
         (comment,) = unpack(j,'comment')
         if comment == "":
             abort(400, 'Malformed request')
