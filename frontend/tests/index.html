@@ -354,7 +354,7 @@
                     return fetch(`${API_URL}/dummy/post?id=${post_id}`, {
                         method: 'GET'
                     }).then(response => {
-                        chai.expect(response.status).to.equal(400);
+                        chai.expect(response.status).to.equal(404);
                     })
                 });
             });
@@ -503,7 +503,7 @@
                         'Authorization': `Token ${auth_token}`
                       }
                   }).then(response => {
-                      chai.expect(response.status).to.equal(400);
+                      chai.expect(response.status).to.equal(404);
                   })
               });
             })
