@@ -1,6 +1,7 @@
 from app import api,db
 from util.globals import *
 from util.models import *
+from util.request_handling import *
 from flask_restplus import Resource, abort, reqparse, fields
 from flask import request
 
@@ -73,18 +74,17 @@ class User(Resource):
     def put(self):
         u = authorize(request)
         u_id = int(u[0])
-        if not request.json:
-            abort(400, 'Malformed request')
+        j = get_request_json()
 
         allowed_keys=['password','name','email']
         safe = {}
-        valid_keys = [k for k in request.json.keys() if k in allowed_keys]
+        valid_keys = [k for k in j.keys() if k in allowed_keys]
         if len(valid_keys) < 1:
             abort(400, 'Malformed request')
-        if "password" in valid_keys and request.json["password"] == "":
+        if "password" in valid_keys and j["password"] == "":
             abort(400, 'Malformed request')
         for k in valid_keys:
-            safe[k] = request.json[k]
+            safe[k] = j[k]
         db.update('USER').set(**safe).where(id=u_id).execute()
         return {
             "msg": "success"

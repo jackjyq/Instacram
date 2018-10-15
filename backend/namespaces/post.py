@@ -1,6 +1,7 @@
 from app import api,db
 from util.globals import *
 from util.models import *
+from util.request_handling import *
 from flask_restplus import Resource, abort, reqparse, fields
 from PIL import Image
 from io import BytesIO
@@ -26,14 +27,12 @@ class Post(Resource):
         Returns the post_id of the new post on success.
     ''')
     def post(self):
-        j = request.json
         u = authorize(request)
         u_username = u[1]
-        if not j:
-            abort(400, 'Malformed request')
+        j = get_request_json()
         (desc,src) = unpack(j,'description_text','src')
         if desc == "" or src == "":
-            abort(400, 'Malformed request')
+            abort(400, 'fgdgdfg')
         try:
             size = (150,150)
             im = Image.open(BytesIO(base64.b64decode(src)))
@@ -72,14 +71,12 @@ class Post(Resource):
         unauthorized error will be raised.
     ''')
     def put(self):
-        j = request.json
+        u = authorize(request)
+        u_username = u[1]
+        j = get_request_json()
         try:
             id = int(request.args.get('id',None))
         except:
-            abort(400, 'Malformed request')
-        u = authorize(request)
-        u_username = u[1]
-        if not j:
             abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
             abort(404, 'Post Not Found')
@@ -251,12 +248,10 @@ class Comment(Resource):
     ''')
     def put(self):
         u = authorize(request)
-        j = request.json
+        j = get_request_json()
         try:
             id = int(request.args.get('id',None))
         except:
-            abort(400, 'Malformed request')
-        if not j:
             abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
             abort(404, 'Post Not Found')
