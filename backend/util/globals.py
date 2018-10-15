@@ -15,6 +15,10 @@ def gen_token():
     return token
 
 def authorize(r):
+    # Probably not the best way of doing this
+    if r.path.startswith("/dummy"):
+        return get_dummy_user()
+
     t = r.headers.get('Authorization',None)
     if not t:
         abort(403,'Unsupplied Authorization Token')
