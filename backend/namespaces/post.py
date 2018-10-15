@@ -78,7 +78,7 @@ class Post(Resource):
             abort(400, 'Malformed request')
         u = authorize(request)
         u_username = u[1]
-        if not j or not id:
+        if not j:
             abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
             abort(400, 'Post Node Found')
@@ -121,8 +121,6 @@ class Post(Resource):
             id = int(request.args.get('id',None))
         except:
             abort(400, 'Malformed request')
-        if not id:
-            abort(400,'Malformed Request')
         if not db.exists('POST').where(id=id):
             abort(400,'Post Not Found')
         p = db.select('POST').where(id=id).execute()

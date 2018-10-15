@@ -59,12 +59,14 @@ class Dummy_Post(Resource):
     ''')
     def put(self):
         j = request.json
-        id = request.args.get('id',None)
         u = get_dummy_user()
         u_username = u[1]
-        if not j or not id:
+        try:
+            id = int(request.args.get('id',None))
+        except:
             abort(400, 'Malformed request')
-        id = int(id)
+        if not j:
+            abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
             abort(400, 'Post Not Found')
         # check the logged in user made this post
@@ -95,10 +97,10 @@ class Dummy_Post(Resource):
     ''')
     def delete(self):
         u = get_dummy_user()
-        id = request.args.get('id',None)
-        if not id:
-            abort(400,'Malformed Request')
-        id = int(id)
+        try:
+            id = int(request.args.get('id',None))
+        except:
+            abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
             abort(400,'Post Not Found')
         p = db.select('POST').where(id=id).execute()
@@ -119,10 +121,10 @@ class Dummy_Post(Resource):
     ''')
     def get(self):
         u = get_dummy_user()
-        id = request.args.get('id',None)
-        if not id:
-            abort(400,'Malformed Request')
-        id =int(id)
+        try:
+            id = int(request.args.get('id',None))
+        except:
+            abort(400, 'Malformed request')
         p = db.select('POST').where(id=id).execute()
         if not p:
             abort(400,'Post Not Found')
@@ -139,10 +141,10 @@ class Like(Resource):
     ''')
     def put(self):
         u = get_dummy_user()
-        id = request.args.get('id',None)
-        if not id:
+        try:
+            id = int(request.args.get('id',None))
+        except:
             abort(400, 'Malformed request')
-        id = int(id)
         if not db.exists('POST').where(id=id):
             abort(400, 'Post Not Found')
 
@@ -166,10 +168,10 @@ class Unlike(Resource):
     ''')
     def put(self):
         u = get_dummy_user()
-        id = request.args.get('id',None)
-        if not id:
+        try:
+            id = int(request.args.get('id',None))
+        except:
             abort(400, 'Malformed request')
-        id = int(id)
         if not db.exists('POST').where(id=id):
             abort(400, 'Post Not Found')
         p = db.select('POST').where(id=id).execute()
@@ -194,10 +196,12 @@ class Comment(Resource):
     def put(self):
         u = get_dummy_user()
         j = request.json
-        id = request.args.get('id',None)
-        if not id or not j:
+        try:
+            id = int(request.args.get('id',None))
+        except:
             abort(400, 'Malformed request')
-        id = int(id)
+        if not j:
+            abort(400, 'Malformed request')
         if not db.exists('POST').where(id=id):
             abort(400, 'Post Not Found')
         (comment,) = unpack(j,'comment')
