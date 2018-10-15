@@ -27,7 +27,7 @@ def authorize(r):
     try:
         t = t.split(" ")[1]
     except:
-        abort(403,'Invalid Authorization Token')
+        abort(400,"Authorization Token must start with 'Token'")
     if not db.exists("USER").where(curr_token=t):
         abort(403,'Invalid Authorization Token')
     return db.select("USER").where(curr_token=t).execute()

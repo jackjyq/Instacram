@@ -12,6 +12,7 @@ class User(Resource):
     @user.response(200, 'Success', user_details)
     @user.response(403, 'Invalid Auth Token')
     @user.response(400, 'Malformed Request')
+    @user.response(404, 'User Not Found')
     @user.expect(auth_details)
     @user.param('id','Id of user to get information for (defaults to logged in user)')
     @user.param('username','username of user to get information for (defaults to logged in user)')
@@ -28,8 +29,8 @@ class User(Resource):
     ''')
     def get(self):
         u = authorize(request)
-        u_id = request.args.get('id',None)
-        username = request.args.get('username',None)
+        u_id = get_request_arg('id', int)
+        username = get_request_arg('username')
 
         # extract information from paramtaters
         if u_id or username:
@@ -38,7 +39,7 @@ class User(Resource):
             elif username and db.exists("USER").where(username=username):
                 u_id = int(db.select("USER").where(username=username).execute()[0])
             else:
-                abort(400, "Expected 'id' or 'username' query paremeter")
+                abort(404, "User Not Found")
         else:
             u_id = int(u[0])
 
@@ -110,8 +111,8 @@ class Feed(Resource):
     ''')
     def get(self):
         u = authorize(request)
-        n = request.args.get('n',10)
-        p = request.args.get('p',0)
+        n = get_request_arg('n', int, default=10)
+        p = get_request_arg('p', int, default=0)
         following = text_list_to_set(u[4],process_f=lambda x:int(x))
         following = [db.select('USER').where(id=int(id)).execute()[1] for id in following]
         wildcards = ','.join(['?']*len(following))
@@ -143,9 +144,7 @@ class Follow(Resource):
         u = authorize(request)
         u_id = int(u[0])
         follow_list = text_list_to_set(u[4],process_f=lambda x: int(x))
-        to_follow = request.args.get('username',None)
-        if to_follow == None:
-            abort(400, "Expected 'username' query parameter")
+        to_follow = get_request_arg('username', required=True)
         if not db.exists('USER').where(username=to_follow):
             abort(404, 'User Not Found')
         if to_follow == u[1]:
@@ -175,7 +174,7 @@ class UnFollow(Resource):
         u = authorize(request)
         u_id = int(u[0])
         following = text_list_to_set(u[4],process_f=lambda x:int(x))
-        to_follow = request.args.get('username',None)
+        to_follow = get_request_arg('username', required=True)
         if to_follow == u[1]:
             abort(400,"You can't unfollow yourself either.")
         if to_follow == None:

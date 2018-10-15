@@ -47,7 +47,7 @@ class Signup(Resource):
         if db.exists('USER').where(username=un):
             abort(409, 'Username Taken')
         if ps == '':
-            abort(400, 'Malformed Request')
+            abort(400, 'Password cannot be empty')
 
         t = gen_token()
         db_r = db.insert('USER').with_values(

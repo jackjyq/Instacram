@@ -31,8 +31,10 @@ class Post(Resource):
         u_username = u[1]
         j = get_request_json()
         (desc,src) = unpack(j,'description_text','src')
-        if desc == "" or src == "":
-            abort(400, 'fgdgdfg')
+        if desc == "":
+            abort(400, "description_text cannot be empty")
+        if src == "":
+            abort(400, "src cannot be empty")
         try:
             size = (150,150)
             im = Image.open(BytesIO(base64.b64decode(src)))
@@ -74,10 +76,7 @@ class Post(Resource):
         u = authorize(request)
         u_username = u[1]
         j = get_request_json()
-        try:
-            id = int(request.args.get('id',None))
-        except:
-            abort(400, 'Malformed request')
+        id = get_request_arg('id', int, required=True)
         if not db.exists('POST').where(id=id):
             abort(404, 'Post Not Found')
         # check the logged in user made this post
@@ -88,7 +87,7 @@ class Post(Resource):
             abort(403, 'You Are Unauthorized To Edit That Post')
         (desc,src) = unpack(j,'description_text','src',required=False)
         if desc == None and src == None:
-            abort(400, 'Malformed Request')
+            abort(400, "Expected at least 'description_text' or 'src'")
         updated = {}
         if desc:
             updated['description'] = desc
@@ -116,10 +115,7 @@ class Post(Resource):
     ''')
     def delete(self):
         u = authorize(request)
-        try:
-            id = int(request.args.get('id',None))
-        except:
-            abort(400, 'Malformed request')
+        id = get_request_arg('id', int, required=True)
         if not db.exists('POST').where(id=id):
             abort(404,'Post Not Found')
         p = db.select('POST').where(id=id).execute()
@@ -154,10 +150,7 @@ class Post(Resource):
     ''')
     def get(self):
         u = authorize(request)
-        try:
-            id = int(request.args.get('id',None))
-        except:
-            abort(400, 'Malformed request')
+        id = get_request_arg('id', int, required=True)
         p = db.select('POST').where(id=id).execute()
         if not p:
             abort(404,'Post Not Found')
@@ -181,10 +174,7 @@ class Like(Resource):
     ''')
     def put(self):
         u = authorize(request)
-        try:
-            id = int(request.args.get('id',None))
-        except:
-            abort(400, 'Malformed request')
+        id = get_request_arg('id', int, required=True)
         if not db.exists('POST').where(id=id):
             abort(404, 'Post Not Found')
         p = db.select('POST').where(id=id).execute()
@@ -214,10 +204,7 @@ class Unlike(Resource):
     ''')
     def put(self):
         u = authorize(request)
-        try:
-            id = int(request.args.get('id',None))
-        except:
-            abort(400, 'Malformed request')
+        id = get_request_arg('id', int, required=True)
         if not db.exists('POST').where(id=id):
             abort(404, 'Post Not Found')
         p = db.select('POST').where(id=id).execute()
@@ -249,15 +236,12 @@ class Comment(Resource):
     def put(self):
         u = authorize(request)
         j = get_request_json()
-        try:
-            id = int(request.args.get('id',None))
-        except:
-            abort(400, 'Malformed request')
+        id = get_request_arg('id', int, required=True)
         if not db.exists('POST').where(id=id):
             abort(404, 'Post Not Found')
         (comment,) = unpack(j,'comment')
         if comment == "":
-            abort(400, 'Malformed request')
+            abort(400, 'Comment cannot be empty')
         comment_id = db.insert('COMMENT').with_values(
             comment=comment,
             author=u[1],
