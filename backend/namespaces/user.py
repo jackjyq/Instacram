@@ -104,7 +104,8 @@ class Feed(Resource):
         of everyone the user pointed to by the auth token follows.
         The users own posts do not show up here.
         The paramater p specifies where to begin reading and n specified the
-        length of the read.
+        length of the read. If p is larger then the number of posts availble,
+        a empty array will be returned.
         If you wanted to get 2 pages worth of posts you would do (p=0,n=10) to
         get the first 10 posts and (p=10,n=10) to get the next 10. The first one
         would return posts 0,1,2,3,4,5,6,7,8,9 etc.
@@ -116,13 +117,16 @@ class Feed(Resource):
         following = text_list_to_set(u[4],process_f=lambda x:int(x))
         following = [db.select('USER').where(id=int(id)).execute()[1] for id in following]
         wildcards = ','.join(['?']*len(following))
+        # very inefficent but it'll work
         q = 'SELECT * FROM POSTS WHERE author in ({})'.format(wildcards)
-        q+=' LIMIT ? OFFSET ?'
-        following.append(n)
-        following.append(p)
         all_posts = db.raw(q,following)
+
         all_posts = [format_post(row) for row in all_posts]
         all_posts.sort(reverse=True,key=lambda x: float(x["meta"]["published"]))
+        if p > len(all_posts)-1:
+            all_posts = []
+        else:
+            all_posts = all_posts[p:p+n]
         return {
             'posts': all_posts
         }
