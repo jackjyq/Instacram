@@ -9,7 +9,7 @@
     <!-- Acknowlegement: the following 1 line is from: https://getbootstrap.com/ -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <!-- Acknowlegement: this css file is from https://bootsnipp.com/snippets/featured/password-strength-meter -->
-    <link rel="stylesheet" type="text/css" media="screen" href="styles/login.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="styles/bootstrap-login.css" />
 
     <link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
     <script type="module" src="src/helpers.js"></script>
@@ -17,9 +17,9 @@
 </head>
 <body>
     <!-- This is an example app structure --> 
-    <header class='banner' >
-        <h1>Instacram</h1>
-        <ul class='nav' style="visibility:hidden;">
+    <header class='banner' style="display: none;">
+        <img src="./images/instacram.png" style="width:175px;height:51px;" class="img-responsive" alt="" />
+        <ul class='nav'>
             <li class="nav-item"><input type="file"/></li>
             <li class='nav-item'>Icon</li>
             <li class='nav-item'>Icon</li>
@@ -30,28 +30,27 @@
         <!-- Acknowlegement: this div is from https://bootsnipp.com/snippets/featured/password-strength-meter 
             modified by Jack Jiang
         -->
-        <div class="container" id='login-div' >
-                <div class="row" id="pwd-container">
-                    <div class="col-md-4"></div>
-                    <div class="col-md-4">
-                    <section class="login-form">
-                        <form method="post" action="#" role="login">
-                        <img src="http://i.imgur.com/RcmcLv4.png" class="img-responsive" alt="" />
-                        <input type="username" name="emaiusernamel" placeholder="username" required class="form-control input-lg" value="joestudent@gmail.com" />
-                        <input type="password" class="form-control input-lg" id="password" placeholder="Password" required="" />
-                        <div class="pwstrength_viewport_progress"></div>
-                        <button type="submit" name="go" class="btn btn-lg btn-primary btn-block">Sign in</button>
-                        <div>
-                            <a href="#">Create account</a> or <a href="#">reset password</a>
-                        </div>
-                        </form>
-                        <div class="form-links">
-                        <a href="#">www.website.com</a>
-                        </div>
-                    </section>  
+        <div class="container" style="">
+            <div class="row" id="pwd-container">
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                <section class="login-form">
+                    <form  role="login">
+                    <img src="./images/instacram.png" style="width:175px;height:51px;" class="img-responsive" alt="" />
+                    <input type="username" name="emaiusernamel" id="username" placeholder="username" required class="form-control input-lg" />
+                    <input type="password" class="form-control input-lg" id="password" placeholder="Password" required="" />
+                    <div class="pwstrength_viewport_progress"></div>
+                    <button type="button" onclick='return false;' id="signIn" class="btn btn-lg btn-primary btn-block">Sign in</button>
+                    <div id='signInfo' style="color: red;">
                     </div>
-                    <div class="col-md-4"></div>
+                    <div>
+                        Don't have an account? <a href="#" id='signUp'>Sign up</a>
+                    </div>
+                    </form>
+                </section>  
                 </div>
+                <div class="col-md-4"></div>
+            </div>
         </div>
 
         <!-- app goes here --> 
@@ -60,7 +59,7 @@
         </div>
     </main>
     <footer>
-        <p>Instacram example</p>
+        <p>@2018 Instacram</p>
     </footer>
     <script type="module" src="src/main.js"></script>
 
@@ -69,6 +68,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <!-- Acknowlegement: the following script is from: https://bootsnipp.com/snippets/featured/password-strength-meter -->
-    <script src="src/login.js"></script>
+    <!-- <script src="src/bootstrap-login.js"></script> -->
 </body>
 </html>

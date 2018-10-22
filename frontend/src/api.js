@@ -6,6 +6,10 @@ const getJSON = (path, options) =>
         .then(res => res.json())
         .catch(err => console.warn(`API_ERROR: ${err.message}`));
 
+
+
+
+
 /**
  * This is a sample class API which you may base your code on.
  * You don't have to do this as a class.
@@ -37,5 +41,12 @@ export default class API {
     getMe() {
         return this.makeAPIRequest('me.json');
     }
+
+    signInfo(info) {
+        const signInfo = document.getElementById('signInfo');
+        signInfo.innerHTML = info;
+        return;
+    }
+
 
 }
