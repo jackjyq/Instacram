@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -15,59 +16,66 @@
     <script type="module" src="src/helpers.js"></script>
     <script type="module" src="src/api.js"></script>
 </head>
+
+
 <body>
-    <!-- This is an example app structure --> 
-    <header class='banner' style="display: none;">
+<!-- This is an example app structure --> 
+<header class='banner' style="display: none;">
+    <img src="./images/instacram.png" style="width:175px;height:51px;" class="img-responsive" alt="" />
+    <ul class='nav'>
+        <li class="nav-item"><input type="file"/></li>
+        <li class='nav-item'>Icon</li>
+        <li class='nav-item'>Icon</li>
+    </ul>
+</header>
+
+
+<main role='main'>
+    <!-- Acknowlegement: this div is from https://bootsnipp.com/snippets/featured/password-strength-meter 
+        modified by Jack Jiang
+    -->
+    <div class="container">
+    <div class="row" id="pwd-container">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+    <section class="login-form">
+    <form  role="login">
         <img src="./images/instacram.png" style="width:175px;height:51px;" class="img-responsive" alt="" />
-        <ul class='nav'>
-            <li class="nav-item"><input type="file"/></li>
-            <li class='nav-item'>Icon</li>
-            <li class='nav-item'>Icon</li>
-        </ul>
-    </header>
-    <main role='main'>
+        <input type="username" id="name" placeholder="Full Name" required class="form-control input-lg" style="display: none;"/>
+        <input type="username" id="username" placeholder="Username" required class="form-control input-lg" />
+        <input type="password" class="form-control input-lg" id="password" placeholder="Password" required="" />
+        <div class="pwstrength_viewport_progress"></div>
+        <button type="button" onclick='return false;' id="signUpButton" class="btn btn-lg btn-primary btn-block" style="display: none;">Sign up</button>
+        <button type="button" onclick='return false;' id="signInButton" class="btn btn-lg btn-primary btn-block">Sign in</button>
+        <div id='signInfo' style="color: red;"> </div>
+        <div id='signUpBanner'> Don't have an account? <a href="#" id='signUpLink'>Sign up</a> </div>
+        <div id='signInBanner' style="display: none;"> Have an account? <a href="#" id='signInLink'>Sign in</a> </div>
+    </form>
+    </section>  
+    </div>
+    <div class="col-md-4"></div>
+    </div>
+    </div>
 
-        <!-- Acknowlegement: this div is from https://bootsnipp.com/snippets/featured/password-strength-meter 
-            modified by Jack Jiang
-        -->
-        <div class="container" style="">
-            <div class="row" id="pwd-container">
-                <div class="col-md-4"></div>
-                <div class="col-md-4">
-                <section class="login-form">
-                    <form  role="login">
-                    <img src="./images/instacram.png" style="width:175px;height:51px;" class="img-responsive" alt="" />
-                    <input type="username" name="emaiusernamel" id="username" placeholder="username" required class="form-control input-lg" />
-                    <input type="password" class="form-control input-lg" id="password" placeholder="Password" required="" />
-                    <div class="pwstrength_viewport_progress"></div>
-                    <button type="button" onclick='return false;' id="signIn" class="btn btn-lg btn-primary btn-block">Sign in</button>
-                    <div id='signInfo' style="color: red;">
-                    </div>
-                    <div>
-                        Don't have an account? <a href="#" id='signUp'>Sign up</a>
-                    </div>
-                    </form>
-                </section>  
-                </div>
-                <div class="col-md-4"></div>
-            </div>
-        </div>
+    <!-- app goes here --> 
+    <div id='large-feed' style="display: none;">
+        <!-- inject feed data -->
+    </div>
+</main>
 
-        <!-- app goes here --> 
-        <div id='large-feed'>
-            <!-- inject feed data -->
-        </div>
-    </main>
-    <footer>
-        <p>@2018 Instacram</p>
-    </footer>
-    <script type="module" src="src/main.js"></script>
 
-    <!-- Acknowlegement: the following 3 lines are from: https://getbootstrap.com/ -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <!-- Acknowlegement: the following script is from: https://bootsnipp.com/snippets/featured/password-strength-meter -->
-    <!-- <script src="src/bootstrap-login.js"></script> -->
+<footer>
+    <p>@2018 Instacram</p>
+</footer>
+
+
+<script type="module" src="src/main.js"></script>
+<!-- Acknowlegement: the following 3 lines are from: https://getbootstrap.com/ -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<!-- Acknowlegement: the following script is from: https://bootsnipp.com/snippets/featured/password-strength-meter -->
+<!-- <script src="src/bootstrap-login.js"></script> -->
+
 </body>
 </html>

@@ -42,10 +42,55 @@ export default class API {
         return this.makeAPIRequest('me.json');
     }
 
+    // login: 1  
+    // registration: 2 
+    // feed interface: 3
+    changeUiTo(state) {
+        const banner = document.getElementsByClassName('banner')[0];
+        const signForm = document.getElementsByClassName('container')[0];
+        const nameInput = document.getElementById('name');
+        const signUpButton = document.getElementById('signUpButton');
+        const signInButton = document.getElementById('signInButton');
+        const signUpBanner = document.getElementById('signUpBanner');
+        const signInBanner = document.getElementById('signInBanner');
+        const feedAera = document.getElementById('large-feed');
+        if (state === 1) {
+            banner.setAttribute('style', 'display: none;');
+            signForm.removeAttribute('style');
+            nameInput.setAttribute('style', 'display: none;');
+            signUpButton.setAttribute('style', 'display: none;');
+            signInButton.removeAttribute('style');
+            signUpBanner.removeAttribute('style');
+            signInBanner.setAttribute('style', 'display: none;');
+            feedAera.setAttribute('style', 'display: none;');
+        } else if (state === 2) {
+            banner.setAttribute('style', 'display: none;');
+            signForm.removeAttribute('style');
+            nameInput.removeAttribute('style');
+            signUpButton.removeAttribute('style');
+            signInButton.setAttribute('style', 'display: none;');
+            signUpBanner.setAttribute('style', 'display: none;');
+            signInBanner.removeAttribute('style');
+            feedAera.setAttribute('style', 'display: none;');
+        } else if (state === 3) {
+            banner.removeAttribute('style');
+            signForm.setAttribute('style', 'display: none;');
+            nameInput.setAttribute('style', 'display: none;');
+            signUpButton.setAttribute('style', 'display: none;');
+            signInButton.removeAttribute('style');
+            signUpBanner.removeAttribute('style');
+            signInBanner.setAttribute('style', 'display: none;');
+            feedAera.removeAttribute('style');
+        } else {
+            return 0;
+        }
+        return state;
+    }
+
     signInfo(info) {
         const signInfo = document.getElementById('signInfo');
         signInfo.innerHTML = info;
-        return;
+        return info;
     }
 
 
