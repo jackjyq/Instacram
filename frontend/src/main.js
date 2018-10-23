@@ -33,6 +33,8 @@ api.makeAPIRequest('users.json').then(json => {
             api.changeUiTo(2);
         } else if (click.target.id === 'signInLink'){
             api.changeUiTo(1);
+        }  else if (click.target.id === 'logOutLink'){
+            api.changeUiTo(1);
         } else {
             ;
         }
@@ -53,7 +55,7 @@ function trySignIn() {
     } else {
         for (const item of userData) {
             if (username === item.username && password === '1') {
-                return username;
+                return item.name;
             }
         }
         api.signInfo('Sorry, your password was incorrect. Please double-check your password.');
@@ -87,13 +89,15 @@ function trySignUp() {
             "posts": [0]
         }
         userData.push(entry);
-        return username;
+        return fullname;
     }
     return false;
 }
 
 
 function getUserFeed(username) {
+    const summary = document.getElementById('summary');
+    summary.children[0].children[0].innerHTML = username;
     // we can use this single api request multiple times
     const feed = api.getFeed();
 
