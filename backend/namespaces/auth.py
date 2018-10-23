@@ -20,6 +20,8 @@ class Login(Resource):
     def post(self):
         j = get_request_json()
         (un,ps) = unpack(j,'username','password')
+        if un == '' or ps == '':
+            abort(400, 'Username and password cannot be empty')
         if not db.exists('USER').where(username=un,password=ps):
             abort(403,'Invalid Username/Password')
         t = gen_token()
