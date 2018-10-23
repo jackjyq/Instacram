@@ -24,6 +24,8 @@ export default class API {
         this.url = url;
     } 
 
+
+
     makeAPIRequest(path) {
         return getJSON(`${this.url}/${path}`);
     }
@@ -49,11 +51,12 @@ export default class API {
         const banner = document.getElementsByTagName('header')[0];
         const signForm = document.getElementsByClassName('container')[0];
         const nameInput = document.getElementById('name');
+        const emailInput = document.getElementById('useremail');
         const signUpButton = document.getElementById('signUpButton');
         const signInButton = document.getElementById('signInButton');
         const signUpBanner = document.getElementById('signUpBanner');
         const signInBanner = document.getElementById('signInBanner');
-        const summary = document.getElementById('summary');
+        const userboard = document.getElementById('userboard');
         const feedAera = document.getElementById('large-feed');
         const footer = document.getElementsByTagName('footer')[0];
         this.signInfo('');
@@ -61,33 +64,36 @@ export default class API {
             banner.setAttribute('style', 'display: none;');
             signForm.removeAttribute('style');
             nameInput.setAttribute('style', 'display: none;');
+            emailInput.setAttribute('style', 'display: none;');
             signUpButton.setAttribute('style', 'display: none;');
             signInButton.removeAttribute('style');
             signUpBanner.removeAttribute('style');
             signInBanner.setAttribute('style', 'display: none;');
-            summary.setAttribute('style', 'display: none;');
+            userboard.setAttribute('style', 'display: none;');
             feedAera.setAttribute('style', 'display: none;');
             footer.removeAttribute('style');
         } else if (state === 2) {
             banner.setAttribute('style', 'display: none;');
             signForm.removeAttribute('style');
             nameInput.removeAttribute('style');
+            emailInput.removeAttribute('style');
             signUpButton.removeAttribute('style');
             signInButton.setAttribute('style', 'display: none;');
             signUpBanner.setAttribute('style', 'display: none;');
             signInBanner.removeAttribute('style');
-            summary.setAttribute('style', 'display: none;');
+            userboard.setAttribute('style', 'display: none;');
             feedAera.setAttribute('style', 'display: none;');
             footer.removeAttribute('style');
         } else if (state === 3) {
             banner.removeAttribute('style');
             signForm.setAttribute('style', 'display: none;');
             nameInput.setAttribute('style', 'display: none;');
+            emailInput.setAttribute('style', 'display: none;');
             signUpButton.setAttribute('style', 'display: none;');
             signInButton.removeAttribute('style');
             signUpBanner.removeAttribute('style');
             signInBanner.setAttribute('style', 'display: none;');
-            summary.removeAttribute('style');
+            userboard.removeAttribute('style');
             feedAera.removeAttribute('style');
             footer.removeAttribute('style');
         } else {

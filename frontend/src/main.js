@@ -6,69 +6,104 @@ import API from './api.js';
 
 // global varibles
 const api  = new API();
-let userData;
-api.changeUiTo(1);
+
+
+
+
+
+if (window.localStorage.getItem('AUTH_KEY') === null) {
+    api.changeUiTo(1);
+} else {
+    getUserFeed();
+}
 
 // loading
 // User State login: 1  
 //            registration: 2 
 //            feed interface:3
-api.makeAPIRequest('users.json').then(json => {
-    userData = json;
-    document.addEventListener('click', click => {
-        // console.log(click.target.id);
-        if (click.target.id === 'signUpButton') {
-            const username = trySignUp();
-            if (username) {
-                api.changeUiTo(3);
-                getUserFeed(username);
-            }
-        } else if (click.target.id === 'signInButton') {
-            const username = trySignIn();
-            if (username) {
-                api.changeUiTo(3);
-                getUserFeed(username);
-            }
-        } else if (click.target.id === 'signUpLink'){
-            api.changeUiTo(2);
-        } else if (click.target.id === 'signInLink'){
-            api.changeUiTo(1);
-        }  else if (click.target.id === 'logOutLink'){
-            api.changeUiTo(1);
-        } else {
-            ;
-        }
-    })
+document.addEventListener('click', click => {
+    // console.log(click.target.id);
+    if (click.target.id === 'signUpButton') {
+        trySignUp();
+    } else if (click.target.id === 'signInButton') {
+        trySignIn();
+    } else if (click.target.id === 'signUpLink'){
+        api.changeUiTo(2);
+    } else if (click.target.id === 'signInLink'){
+        api.changeUiTo(1);
+    }  else if (click.target.id === 'logOutLink'){
+        signOut();
+    } else {
+        ;
+    }
 })
 
 
+function signOut() {
+    localStorage.clear();
+    api.changeUiTo(1);
+}
 
 
 
 function trySignIn() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const url = 'http://localhost:5000/auth/login';
+    const fetchData = { 
+        method: 'POST', 
+        body: JSON.stringify({
+            "username": username,
+            "password": password
+          }),
+        headers: {
+            "accept": "application/json",
+            "Content-Type": "application/json"
+        }
+    }
     if (!username) {
         api.signInfo("Please enter username");
     } else if (!password) {
         api.signInfo("Please enter password");
     } else {
-        for (const item of userData) {
-            if (username === item.username && password === '1') {
-                return item.name;
+        fetch(url, fetchData)
+        .then(res => res.json())
+        .then(json => {
+            if (json["token"] === undefined) {
+                api.signInfo('Sorry, your password was incorrect. Please double-check your password.');
+            } else {
+                // console.log("SignIn " + json["token"]);
+                window.localStorage.setItem('AUTH_KEY', json["token"]);
+                getUserFeed();  
             }
-        }
-        api.signInfo('Sorry, your password was incorrect. Please double-check your password.');
+        })
     }
-    return false;
 }
+
+
+
 
 
 
 function trySignUp() {
     const fullname = document.getElementById('name').value;
+    const useremail = document.getElementById('useremail').value;
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const url = 'http://localhost:5000/auth/signup';
+    const fetchData = { 
+        method: 'POST', 
+        body: JSON.stringify({
+            "username": username,
+            "password": password,
+            "email": useremail,
+            "name": fullname
+          }),
+        headers: {
+            "accept": "application/json",
+            "Content-Type": "application/json"
+        }
+    }
     if (!username) {
         api.signInfo("Please enter username");
     } else if (!password) {
@@ -76,28 +111,23 @@ function trySignUp() {
     } else if (!fullname) {
         api.signInfo("Please enter full name");
     } else {
-        for (const item of userData) {
-            if (username === item.username) {
+        fetch(url, fetchData)
+        .then(res => res.json())
+        .then(json => {
+            if (json["token"] === undefined) {
                 api.signInfo("The username isn't available. Please try another.");
-                return false;
+            } else {
+                window.localStorage.setItem('AUTH_KEY', json["token"]);
+                getUserFeed();
             }
-        }
-        const entry = {
-            "username": username,
-            "name": fullname,
-            "id"  : 0,
-            "posts": [0]
-        }
-        userData.push(entry);
-        return fullname;
+        })
     }
-    return false;
 }
 
 
-function getUserFeed(username) {
-    const summary = document.getElementById('summary');
-    summary.children[0].children[0].innerHTML = username;
+function getUserFeed() {
+    api.changeUiTo(3);
+    getUserBoard();
     // we can use this single api request multiple times
     const feed = api.getFeed();
 
@@ -114,6 +144,35 @@ function getUserFeed(username) {
     });
 }
 
+
+
+function getUserBoard() {
+    const url = 'http://localhost:5000/user/';
+    const key = window.localStorage.getItem('AUTH_KEY');
+    // console.log("Get User " + key);
+    const fetchData = { 
+        method: 'GET', 
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        if (json["id"] === undefined) {
+            signOut();
+        } else {
+            // console.log(json);
+            const userboard = document.getElementById('userboard');
+            userboard.children[0].children[0].innerHTML = json.name;
+            userboard.children[0].children[1].children[0].innerHTML = 
+                    json.posts.length + " posts | "
+                    + json.followed_num + " followers | "
+                    + json.following.length + " following";
+        }
+    })
+}
 
 // Potential example to upload an image
 // const input = document.querySelector('input[type="file"]');

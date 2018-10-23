@@ -44,7 +44,6 @@ export function createPostTile(post) {
     section.children[1].children[1].innerHTML = 'published at ' + publishDate;
     section.children[2].src = '/images/' + post.src;
     section.children[3].innerText = post.meta.likes.length + ' likes | ' + post.meta.comments.length + ' comments';
-    console.log(section.children[2]);
     return section;
 }
 

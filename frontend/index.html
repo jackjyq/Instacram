@@ -60,6 +60,7 @@
     <form  role="login">
         <img src="./images/instacram.png" style="width:200px;height:100px;" class="img-responsive" alt="" />
         <input type="username" id="name" placeholder="Full Name" required class="form-control input-lg" style="display: none;"/>
+        <input type="useremail" id="useremail" placeholder="Email" required class="form-control input-lg" style="display: none;"/>
         <input type="username" id="username" placeholder="Username" required class="form-control input-lg" />
         <input type="password" class="form-control input-lg" id="password" placeholder="Password" required="" />
         <div class="pwstrength_viewport_progress"></div>
@@ -76,9 +77,10 @@
     </div>
 
     <!-- Acknowlegement: this card is from https://bootswatch.com/minty/ -->
-    <div id='summary' class="card"  style="display: none;">
+    <div id='userboard' class="card"  style="display: none;">
             <div class="card-body">
                 <h4 class="card-title">Me</h4>
+                <h6 class="card-subtitle mb-2 text-muted"><strong>? posts | ? followers | ? following</strong></h6>
                 <a href="#" id='logOutLink' class="card-link">Log out</a>
             </div>
     </div>
