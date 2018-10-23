@@ -53,6 +53,7 @@ export default class API {
         const signInButton = document.getElementById('signInButton');
         const signUpBanner = document.getElementById('signUpBanner');
         const signInBanner = document.getElementById('signInBanner');
+        const summary = document.getElementById('summary');
         const feedAera = document.getElementById('large-feed');
         const footer = document.getElementsByTagName('footer')[0];
         this.signInfo('');
@@ -64,6 +65,7 @@ export default class API {
             signInButton.removeAttribute('style');
             signUpBanner.removeAttribute('style');
             signInBanner.setAttribute('style', 'display: none;');
+            summary.setAttribute('style', 'display: none;');
             feedAera.setAttribute('style', 'display: none;');
             footer.removeAttribute('style');
         } else if (state === 2) {
@@ -74,6 +76,7 @@ export default class API {
             signInButton.setAttribute('style', 'display: none;');
             signUpBanner.setAttribute('style', 'display: none;');
             signInBanner.removeAttribute('style');
+            summary.setAttribute('style', 'display: none;');
             feedAera.setAttribute('style', 'display: none;');
             footer.removeAttribute('style');
         } else if (state === 3) {
@@ -84,6 +87,7 @@ export default class API {
             signInButton.removeAttribute('style');
             signUpBanner.removeAttribute('style');
             signInBanner.setAttribute('style', 'display: none;');
+            summary.removeAttribute('style');
             feedAera.removeAttribute('style');
             footer.removeAttribute('style');
         } else {

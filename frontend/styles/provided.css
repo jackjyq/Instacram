@@ -93,7 +93,7 @@ footer {
 
 /* Add your styles here */
 
-.card.mb-3 {
+.card {
     width: 640px;
     display: block;
     margin: auto;
