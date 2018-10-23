@@ -8,7 +8,9 @@
     <link rel="icon" href="./images/index.png">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Acknowlegement: the following 1 line is from: https://getbootstrap.com/ -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous"> -->
+    <!-- Acknowlegement: this stypesheet is from https://bootswatch.com/minty/ -->
+    <link rel="stylesheet" href="https://bootswatch.com/4/minty/bootstrap.min.css">
     <!-- Acknowlegement: this css file is from https://bootsnipp.com/snippets/featured/password-strength-meter -->
     <link rel="stylesheet" type="text/css" media="screen" href="styles/bootstrap-login.css" />
 
@@ -20,13 +22,40 @@
 
 <body>
 <!-- This is an example app structure --> 
-<header class='banner' style="display: none;">
-    <img src="./images/instacram.png" style="width:175px;height:51px;" class="img-responsive" alt="" />
-    <ul class='nav'>
-        <li class="nav-item"><input type="file"/></li>
-        <li class='nav-item'>Icon</li>
-        <li class='nav-item'>Icon</li>
+<header style="display: none;">
+    <!-- Acknowlegement: this header is from https://bootswatch.com/minty/ 
+         Modified by Jack Jiang
+    -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <img src="./images/instacram.png" style="width:200px;height:100px;" class="img-responsive" alt="" />
+    <div class="collapse navbar-collapse" id="navbarColor01">
+    <ul class="navbar-nav mr-auto">
+    <!-- <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">Features</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">Pricing</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">About</a>
+    </li> -->
     </ul>
+    <div class="form-group">
+    <div class="input-group mb-3">
+        <div class="custom-file">
+        <input class="custom-file-input" id="inputGroupFile02" type="file">
+        <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
+        </div>
+        <div class="input-group-append">
+        <span class="input-group-text" id="">Upload</span>
+        </div>
+    </div>
+    </div>
+    </div>
+    </nav>
 </header>
 
 
@@ -34,13 +63,13 @@
     <!-- Acknowlegement: this div is from https://bootsnipp.com/snippets/featured/password-strength-meter 
         modified by Jack Jiang
     -->
-    <div class="container">
+    <div class="container" style="display: none;">
     <div class="row" id="pwd-container">
     <div class="col-md-4"></div>
     <div class="col-md-4">
     <section class="login-form">
     <form  role="login">
-        <img src="./images/instacram.png" style="width:175px;height:51px;" class="img-responsive" alt="" />
+        <img src="./images/instacram.png" style="width:200px;height:100px;" class="img-responsive" alt="" />
         <input type="username" id="name" placeholder="Full Name" required class="form-control input-lg" style="display: none;"/>
         <input type="username" id="username" placeholder="Username" required class="form-control input-lg" />
         <input type="password" class="form-control input-lg" id="password" placeholder="Password" required="" />
@@ -61,11 +90,38 @@
     <div id='large-feed' style="display: none;">
         <!-- inject feed data -->
     </div>
+
+    <div class="card mb-3" style="width: 640px; display: block; margin: auto;">
+            <h3 class="card-header">Card header</h3>
+            <div class="card-body">
+              <h5 class="card-title">Special title treatment</h5>
+              <h6 class="card-subtitle text-muted">Support card subtitle</h6>
+            </div>
+            <img style="height: 640px; width: 640px; display: block;" src="./images/1_h.jpg" alt="Card image">
+            <div class="card-body">
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Cras justo odio</li>
+              <li class="list-group-item">Dapibus ac facilisis in</li>
+              <li class="list-group-item">Vestibulum at eros</li>
+            </ul>
+            <div class="card-body">
+              <a href="#" class="card-link">Card link</a>
+              <a href="#" class="card-link">Another link</a>
+            </div>
+            <div class="card-footer text-muted">
+              2 days ago
+            </div>
+          </div>
+
+
+
 </main>
 
 
-<footer>
-    <p>@2018 Instacram</p>
+<footer id="footer" style="display: none;">
+    <p>©2018 Jack's Instacram</p>
 </footer>
 
 

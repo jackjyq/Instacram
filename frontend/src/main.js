@@ -7,7 +7,8 @@ import API from './api.js';
 // global varibles
 const api  = new API();
 let userData;
-
+api.changeUiTo(3);
+getUserFeed('jack');
 // loading
 // User State login: 1  
 //            registration: 2 
@@ -27,8 +28,7 @@ api.makeAPIRequest('users.json').then(json => {
             const username = trySignIn();
             if (username) {
                 api.changeUiTo(3);
-                const feedAera = document.getElementById('large-feed');
-                feedAera.innerHTML = "log in as " + username;
+                getUserFeed(username);
             }
         } else if (click.target.id === 'signUpLink'){
             api.changeUiTo(2);
@@ -94,22 +94,27 @@ function trySignUp() {
 }
 
 
-// we can use this single api request multiple times
-// const feed = api.getFeed();
+function getUserFeed(username) {
+    // we can use this single api request multiple times
+    const feed = api.getFeed();
 
-// feed
-// .then(posts => {
-//     posts.reduce((parent, post) => {
-
-//         parent.appendChild(createPostTile(post));
+    feed
+    .then(posts => {
+        console.log(posts);
         
-//         return parent;
+        posts.reduce((parent, post) => {
 
-//     }, document.getElementById('large-feed'))
-// });
+            parent.appendChild(createPostTile(post));
+            
+            return parent;
+
+        }, document.getElementById('large-feed'))
+    });
+}
+
 
 // Potential example to upload an image
-const input = document.querySelector('input[type="file"]');
+// const input = document.querySelector('input[type="file"]');
 
-input.addEventListener('change', uploadImage);
+// input.addEventListener('change', uploadImage);
 

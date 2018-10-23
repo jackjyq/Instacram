@@ -38,9 +38,16 @@ export function createPostTile(post) {
     const section = createElement('section', null, { class: 'post' });
 
     section.appendChild(createElement('h2', post.meta.author, { class: 'post-title' }));
-
+    section.appendChild(createElement('div', post.meta.description_text, { class : 'description_text' }));
+    const publishDate = new Date(post.meta.published);
+    section.appendChild(createElement('div', 'published at ' + publishDate, { class : 'published' }));
+    
     section.appendChild(createElement('img', null, 
         { src: '/images/'+post.src, alt: post.meta.description_text, class: 'post-image' }));
+    
+    section.appendChild(createElement('div', post.meta.likes.length + ' likes', { class : 'likes' }));
+    section.appendChild(createElement('div', post.meta.comments.length + ' comments', { class : 'comments' }));
+
 
     return section;
 }

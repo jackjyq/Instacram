@@ -46,7 +46,7 @@ export default class API {
     // registration: 2 
     // feed interface: 3
     changeUiTo(state) {
-        const banner = document.getElementsByClassName('banner')[0];
+        const banner = document.getElementsByTagName('header')[0];
         const signForm = document.getElementsByClassName('container')[0];
         const nameInput = document.getElementById('name');
         const signUpButton = document.getElementById('signUpButton');
@@ -54,6 +54,8 @@ export default class API {
         const signUpBanner = document.getElementById('signUpBanner');
         const signInBanner = document.getElementById('signInBanner');
         const feedAera = document.getElementById('large-feed');
+        const footer = document.getElementsByTagName('footer')[0];
+        this.signInfo('');
         if (state === 1) {
             banner.setAttribute('style', 'display: none;');
             signForm.removeAttribute('style');
@@ -63,6 +65,7 @@ export default class API {
             signUpBanner.removeAttribute('style');
             signInBanner.setAttribute('style', 'display: none;');
             feedAera.setAttribute('style', 'display: none;');
+            footer.removeAttribute('style');
         } else if (state === 2) {
             banner.setAttribute('style', 'display: none;');
             signForm.removeAttribute('style');
@@ -72,6 +75,7 @@ export default class API {
             signUpBanner.setAttribute('style', 'display: none;');
             signInBanner.removeAttribute('style');
             feedAera.setAttribute('style', 'display: none;');
+            footer.removeAttribute('style');
         } else if (state === 3) {
             banner.removeAttribute('style');
             signForm.setAttribute('style', 'display: none;');
@@ -81,6 +85,7 @@ export default class API {
             signUpBanner.removeAttribute('style');
             signInBanner.setAttribute('style', 'display: none;');
             feedAera.removeAttribute('style');
+            footer.removeAttribute('style');
         } else {
             return 0;
         }
