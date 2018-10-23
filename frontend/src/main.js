@@ -7,8 +7,8 @@ import API from './api.js';
 // global varibles
 const api  = new API();
 let userData;
-api.changeUiTo(3);
-getUserFeed('jack');
+api.changeUiTo(1);
+
 // loading
 // User State login: 1  
 //            registration: 2 
@@ -21,8 +21,7 @@ api.makeAPIRequest('users.json').then(json => {
             const username = trySignUp();
             if (username) {
                 api.changeUiTo(3);
-                const feedAera = document.getElementById('large-feed');
-                feedAera.innerHTML = "log in as " + username;
+                getUserFeed(username);
             }
         } else if (click.target.id === 'signInButton') {
             const username = trySignIn();
@@ -100,10 +99,9 @@ function getUserFeed(username) {
 
     feed
     .then(posts => {
-        console.log(posts);
+        // console.log(posts);
         
         posts.reduce((parent, post) => {
-
             parent.appendChild(createPostTile(post));
             
             return parent;

@@ -35,20 +35,16 @@ export function createElement(tag, data, options = {}) {
  * @returns {HTMLElement}
  */
 export function createPostTile(post) {
-    const section = createElement('section', null, { class: 'post' });
-
-    section.appendChild(createElement('h2', post.meta.author, { class: 'post-title' }));
-    section.appendChild(createElement('div', post.meta.description_text, { class : 'description_text' }));
+    const origin = document.getElementById('large-feed').children[0];
+    const section = origin.cloneNode(true);
+    section.removeAttribute('style');
+    section.children[0].innerHTML = post.meta.author;
+    section.children[1].children[0].innerHTML = post.meta.description_text;
     const publishDate = new Date(post.meta.published);
-    section.appendChild(createElement('div', 'published at ' + publishDate, { class : 'published' }));
-    
-    section.appendChild(createElement('img', null, 
-        { src: '/images/'+post.src, alt: post.meta.description_text, class: 'post-image' }));
-    
-    section.appendChild(createElement('div', post.meta.likes.length + ' likes', { class : 'likes' }));
-    section.appendChild(createElement('div', post.meta.comments.length + ' comments', { class : 'comments' }));
-
-
+    section.children[1].children[1].innerHTML = 'published at ' + publishDate;
+    section.children[2].src = '/images/' + post.src;
+    section.children[3].innerText = post.meta.likes.length + ' likes | ' + post.meta.comments.length + ' comments';
+    console.log(section.children[2]);
     return section;
 }
 

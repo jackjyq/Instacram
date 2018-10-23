@@ -92,3 +92,9 @@ footer {
 }
 
 /* Add your styles here */
+
+.card.mb-3 {
+    width: 640px;
+    display: block;
+    margin: auto;
+}

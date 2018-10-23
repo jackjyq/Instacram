@@ -75,3 +75,5 @@ vgcore.*
 *.pyc
 __pycache__
 *.tar
+frontend/.vstags
+GitLog2Diary.pl
