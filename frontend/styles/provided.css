@@ -98,3 +98,8 @@ footer {
     display: block;
     margin: auto;
 }
+
+abbr {
+    font-weight: bold;
+    text-decoration:none !important;
+}

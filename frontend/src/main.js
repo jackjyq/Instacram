@@ -6,7 +6,7 @@ import API from './api.js';
 
 // global varibles
 const api  = new API();
-
+const HOST = 'http://localhost:5000';
 
 
 
@@ -49,7 +49,7 @@ function signOut() {
 function trySignIn() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const url = 'http://localhost:5000/auth/login';
+    const url = HOST + '/auth/login';
     const fetchData = { 
         method: 'POST', 
         body: JSON.stringify({
@@ -72,7 +72,7 @@ function trySignIn() {
             if (json["token"] === undefined) {
                 api.signInfo('Sorry, your password was incorrect. Please double-check your password.');
             } else {
-                // console.log("SignIn " + json["token"]);
+                console.log("Token " + json["token"]);
                 window.localStorage.setItem('AUTH_KEY', json["token"]);
                 getUserFeed();  
             }
@@ -90,7 +90,7 @@ function trySignUp() {
     const useremail = document.getElementById('useremail').value;
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    const url = 'http://localhost:5000/auth/signup';
+    const url = HOST + '/auth/signup';
     const fetchData = { 
         method: 'POST', 
         body: JSON.stringify({
@@ -128,26 +128,35 @@ function trySignUp() {
 function getUserFeed() {
     api.changeUiTo(3);
     getUserBoard();
-    // we can use this single api request multiple times
-    const feed = api.getFeed();
 
-    feed
-    .then(posts => {
-        // console.log(posts);
-        
-        posts.reduce((parent, post) => {
-            parent.appendChild(createPostTile(post));
-            
-            return parent;
-
-        }, document.getElementById('large-feed'))
-    });
+    const url = HOST + '/user/feed';
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = { 
+        method: 'GET', 
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        if (json["posts"] === undefined) {
+            signOut();
+        } else {
+            json["posts"].reduce((parent, post) => {
+                parent.appendChild(createPostTile(post));
+                
+                return parent;
+    
+            }, document.getElementById('large-feed'))
+        }
+    })
 }
 
 
-
 function getUserBoard() {
-    const url = 'http://localhost:5000/user/';
+    const url = HOST + '/user/';
     const key = window.localStorage.getItem('AUTH_KEY');
     // console.log("Get User " + key);
     const fetchData = { 

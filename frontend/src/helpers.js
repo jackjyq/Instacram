@@ -35,17 +35,45 @@ export function createElement(tag, data, options = {}) {
  * @returns {HTMLElement}
  */
 export function createPostTile(post) {
+    console.log(post)
     const origin = document.getElementById('large-feed').children[0];
     const section = origin.cloneNode(true);
     section.removeAttribute('style');
     section.children[0].innerHTML = post.meta.author;
     section.children[1].children[0].innerHTML = post.meta.description_text;
-    const publishDate = new Date(post.meta.published);
+    const publishDate = new Date(post.meta.published * 1000);
     section.children[1].children[1].innerHTML = 'published at ' + publishDate;
-    section.children[2].src = '/images/' + post.src;
-    section.children[3].innerText = post.meta.likes.length + ' likes | ' + post.meta.comments.length + ' comments';
+    section.children[2].src = 'data:image/png;base64,' + post.src;
+    section.children[3].innerText = post.meta.likes.length + ' likes | ' + post.comments.length + ' comments';
+    post.comments.reduce((parent, comment) => {
+        parent.appendChild(createComments(comment));
+        console.log(comment)
+        return parent;
+
+    }, section.children[4])
     return section;
 }
+
+
+// <li class="list-group-item"><abbr title="published by">Author: </abbr><span>comment goes here</span></li>
+function createComments(comment) {
+    const section = document.createElement('li');
+    section.setAttribute('class', 'list-group-item');
+    // generate abbr
+    const abbr = document.createElement('abbr');
+    const publishDate = new Date(comment.published * 1000);
+    abbr.setAttribute  ('title', 'published at ' + publishDate);
+    abbr.innerText = comment.author + ': ';
+    // generate span
+    const span = document.createElement('span');
+    span.innerText = comment.comment; 
+    //append
+    section.appendChild(abbr);
+    section.appendChild(span);
+    return section;
+}
+
+
 
 // Given an input element of type=file, grab the data uploaded for use
 export function uploadImage(event) {
