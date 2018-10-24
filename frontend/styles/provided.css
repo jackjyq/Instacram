@@ -99,6 +99,10 @@ footer {
     margin: auto;
 }
 
+.userboard {
+    margin-top: 1rem;
+}
+
 abbr {
     font-weight: bold;
     text-decoration:none !important;

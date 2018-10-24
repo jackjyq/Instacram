@@ -236,16 +236,17 @@ function getUserPage(userId) {
             signOut();
         } else {
             // console.log(json);
-            const userboard = document.getElementById('userboard');
-            userboard.children[0].children[0].innerHTML = json.name;
-            userboard.children[0].children[1].children[0].innerHTML = 
-                    json.posts.length + " posts | "
-                    + json.followed_num + " followers | "
-                    + json.following.length + " following";
+            // const userboard = document.getElementById('userboard');
+            // userboard.children[0].children[0].innerHTML = json.name;
+            // userboard.children[0].children[1].children[0].innerHTML = 
+            //         json.posts.length + " posts | "
+            //         + json.followed_num + " followers | "
+            //         + json.following.length + " following";
             userboard.removeAttribute('style');
-            for (const postId of json.posts) {
-                getUserPosts(postId);
-            }
+            // for (const postId of json.posts) {
+            //     getUserPosts(postId);
+            ;
+            // }
         }
     })
 }
