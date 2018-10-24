@@ -35,19 +35,20 @@ export function createElement(tag, data, options = {}) {
  * @returns {HTMLElement}
  */
 export function createPostTile(post) {
-    console.log(post)
+    // console.log(post)
     const origin = document.getElementById('large-feed').children[0];
     const section = origin.cloneNode(true);
     section.removeAttribute('style');
     section.children[0].innerHTML = post.meta.author;
-    section.children[1].children[0].innerHTML = post.meta.description_text;
+    section.children[1].children[0].innerText = post.meta.description_text;
     const publishDate = new Date(post.meta.published * 1000);
-    section.children[1].children[1].innerHTML = 'published at ' + publishDate;
+    section.children[1].children[1].children[0].innerText = 'published at ' + publishDate;
     section.children[2].src = 'data:image/png;base64,' + post.src;
-    section.children[3].innerText = post.meta.likes.length + ' likes | ' + post.comments.length + ' comments';
+    section.children[3].children[0].innerText =  post.meta.likes.length;
+    section.children[3].children[1].innerText = post.comments.length;
     post.comments.reduce((parent, comment) => {
         parent.appendChild(createComments(comment));
-        console.log(comment)
+        // console.log(comment)
         return parent;
 
     }, section.children[4])

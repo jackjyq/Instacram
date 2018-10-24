@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://bootswatch.com/4/minty/bootstrap.min.css">
     <!-- Acknowlegement: this css file is from https://bootsnipp.com/snippets/featured/password-strength-meter -->
     <link rel="stylesheet" type="text/css" media="screen" href="styles/bootstrap-login.css" />
+    <!-- Acknowlegement: this css file (for icons) is from https://fontawesome.com -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
 
     <link rel="stylesheet" type="text/css" media="screen" href="styles/provided.css" />
     <script type="module" src="src/helpers.js"></script>
@@ -87,16 +89,21 @@
     <br>
 
     <div id='large-feed' style="display: none;">
-    <!-- Acknowlegement: this card is from https://bootswatch.com/minty/ -->
+    <!-- Acknowlegement: this card is from https://bootswatch.com/minty/ 
+                         and the icons are come from https://fontawesome.com
+    -->
     <div class="card mb-3" style="display: none;">
             <h3 class="card-header">Name</h3>
             <div class="card-body">
               <h5 class="card-title">The post description text</h5>
-              <h6 class="card-subtitle text-muted">time</h6>
+              <h6 class="card-subtitle text-muted"><small>published by time</small></h6>
             </div>
-            <img style="height: 640px; width: 640px; display: block;" src="./images/1_h.jpg" alt="Card image">
+            <img style="height: 640px; width: 640px; display: block;" src="" alt="Card image">
             <div class="card-footer text-muted">
-                    likes, comments
+                <i class="far fa-heart" id="showLike" data-toggle="modal" data-target="#likeModal" >0</i>
+                <i class="far fa-comment-alt">0</i>
+                <i class="far fa-thumbs-up" id="toggleLike" style="float: right"></i>
+                <!-- <i class="fas fa-thumbs-up"></i> -->
             </div>
             <ul class="list-group list-group-flush">
               <!-- <li class="list-group-item"><abbr title="published by">Author: </abbr><span>comment goes here</span></li> -->
@@ -105,6 +112,29 @@
           </div>
     </div>
 
+
+    <!-- Acknowlegement: this bootstrap modal comes from: https://www.w3schools.com/bootstrap/bootstrap_modal.asp 
+         Modified by Jack Jiang
+    -->
+    <div class="container">
+        <div class="modal fade" id="likeModal" role="dialog">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <!-- <i class="far fa-smile-beam">1 person likes your post</i> -->
+                    <!-- <i class="far fa-smile-beam">2 person like your post</i> -->
+                    <!-- <i class="far fa-frown"> No body likes your post</i> -->
+                    <h4 class="modal-title"><i></i></h4>
+                </div>
+            <div class="modal-body">
+                <ul class="list-group list-group-flush" style='display: none'>
+                    <li class="list-group-item"><span>Author</span><span> likes your post</span></li>
+                </ul>
+            </div>
+            </div>
+            </div>
+        </div>
+    </div>
 </main>
 
 

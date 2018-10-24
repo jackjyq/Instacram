@@ -31,8 +31,11 @@ document.addEventListener('click', click => {
         api.changeUiTo(2);
     } else if (click.target.id === 'signInLink'){
         api.changeUiTo(1);
-    }  else if (click.target.id === 'logOutLink'){
+    } else if (click.target.id === 'logOutLink'){
         signOut();
+    } else if (click.target.id === 'showLike'){
+        const likeNumber = click.target.firstChild.data;
+        getLikeModal(likeNumber);
     } else {
         ;
     }
@@ -128,7 +131,6 @@ function trySignUp() {
 function getUserFeed() {
     api.changeUiTo(3);
     getUserBoard();
-
     const url = HOST + '/user/feed';
     const key = window.localStorage.getItem('AUTH_KEY');
     const fetchData = { 
@@ -153,6 +155,31 @@ function getUserFeed() {
         }
     })
 }
+
+
+function getLikeModal(likeNumber) {
+    const modal = document.getElementById('likeModal').children[0].children[0];
+    const overview = modal.children[0].children[0].children[0];
+    if (likeNumber === 0) {
+        overview.setAttribute('class', "far fa-frown");
+        overview.innerText = ' No body likes your post';
+    } else {
+        overview.setAttribute('class', "far fa-smile-beam");
+        if (likeNumber === 1) {
+            overview.innerText = ' ' + likeNumber + ' person likes your post';
+        } else {
+            overview.innerText = ' ' + likeNumber + ' person like your post';
+        }
+       
+
+
+        
+    }
+}
+
+
+
+
 
 
 function getUserBoard() {
