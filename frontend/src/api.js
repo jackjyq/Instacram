@@ -46,7 +46,7 @@ export default class API {
 
     // login: 1  
     // registration: 2 
-    // feed interface: 3
+    // main interface: 3
     changeUiTo(state) {
         const banner = document.getElementsByTagName('header')[0];
         const signForm = document.getElementsByClassName('container')[0];
@@ -93,7 +93,7 @@ export default class API {
             signInButton.removeAttribute('style');
             signUpBanner.removeAttribute('style');
             signInBanner.setAttribute('style', 'display: none;');
-            userboard.removeAttribute('style');
+            userboard.setAttribute('style', 'display: none;');
             feedAera.removeAttribute('style');
             footer.removeAttribute('style');
         } else {

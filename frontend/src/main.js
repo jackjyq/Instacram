@@ -41,14 +41,17 @@ document.addEventListener('click', click => {
         const postId = click.target.parentElement.parentElement.children[6].innerHTML;
         const section = click.target.parentElement;
         toggleLike(postId, section);
-    } else {
+    } else if (click.target.id === 'feedLink'){
+        getUserFeed();
+    }  else if (click.target.id === 'meLink'){
+        getUserPage();
+    }  else {
         ;
     }
 })
 
 
 function toggleLike(postId, section) {
-    console.log(section);
     const key = window.localStorage.getItem('AUTH_KEY');
     const fetchData = { 
         method: 'PUT', 
@@ -58,7 +61,6 @@ function toggleLike(postId, section) {
         }
     };
     const likeNumber = section.children[0].innerText;
-    // console.log(likeNumber);
     if (section.children[2].className === 'far fa-thumbs-up') {
         // console.log('like');
         const url = HOST + '/post/like?id=' + postId;
@@ -178,7 +180,6 @@ function trySignUp() {
 
 function getUserFeed() {
     api.changeUiTo(3);
-    getUserBoard();
     const feed = document.getElementById('large-feed');
     while (feed.children[1]) {
         feed.removeChild(feed.children[1]);
@@ -200,13 +201,82 @@ function getUserFeed() {
         } else {
             json["posts"].reduce((parent, post) => {
                 parent.appendChild(createPostTile(post));
-                
                 return parent;
-    
             }, feed)
         }
     })
 }
+
+
+function getUserPage(userId) {
+    // clean the feed
+    const feed = document.getElementById('large-feed');
+    while (feed.children[1]) {
+        feed.removeChild(feed.children[1]);
+    }
+    // get user
+    let url;
+    if (userId === undefined) {
+        url = HOST + '/user/';
+    } else {
+        url = HOST + '/user/?id=' + userId;
+    }
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = { 
+        method: 'GET', 
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        if (json["id"] === undefined) {
+            signOut();
+        } else {
+            // console.log(json);
+            const userboard = document.getElementById('userboard');
+            userboard.children[0].children[0].innerHTML = json.name;
+            userboard.children[0].children[1].children[0].innerHTML = 
+                    json.posts.length + " posts | "
+                    + json.followed_num + " followers | "
+                    + json.following.length + " following";
+            userboard.removeAttribute('style');
+            for (const postId of json.posts) {
+                getUserPosts(postId);
+            }
+        }
+    })
+}
+
+
+
+function getUserPosts(postId) {
+    const feed = document.getElementById('large-feed');
+    const url = HOST + '/post/?id=' + postId;
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = { 
+        method: 'GET', 
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        if (json["id"] === postId) {
+            feed.appendChild(createPostTile(json));
+        } else {
+            console.log('something went wrong in getUserPosts');
+        }
+    })
+}
+
+
+
+
 
 
 function getLikeModal(id, likeNumber) {
@@ -283,33 +353,7 @@ function updateLikeModal(id, list) {
 
 
 
-function getUserBoard() {
-    const url = HOST + '/user/';
-    const key = window.localStorage.getItem('AUTH_KEY');
-    // console.log("Get User " + key);
-    const fetchData = { 
-        method: 'GET', 
-        headers: {
-            "accept": "application/json",
-            "Authorization": 'Token ' + key
-        }
-    };
-    fetch(url, fetchData)
-    .then(res => res.json())
-    .then(json => {
-        if (json["id"] === undefined) {
-            signOut();
-        } else {
-            // console.log(json);
-            const userboard = document.getElementById('userboard');
-            userboard.children[0].children[0].innerHTML = json.name;
-            userboard.children[0].children[1].children[0].innerHTML = 
-                    json.posts.length + " posts | "
-                    + json.followed_num + " followers | "
-                    + json.following.length + " following";
-        }
-    })
-}
+
 
 // Potential example to upload an image
 // const input = document.querySelector('input[type="file"]');

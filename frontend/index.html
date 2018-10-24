@@ -28,24 +28,22 @@
     <!-- Acknowlegement: this header is from https://bootswatch.com/minty/ 
          Modified by Jack Jiang
     -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="collapse navbar-collapse" id="navbarColor01">
-        <img src="./images/instacram.png" style="width:200px;height:100px;" class="img-responsive" alt="" />
-        
-        <ul class="navbar-nav mr-auto"> </ul>
-
-        <div class="form-group">
-            <div class="input-group mb-3">
-            <div class="custom-file">
-            <input class="custom-file-input" id="inputGroupFile02" type="file">
-            <label class="custom-file-label" for="inputGroupFile02">Choose file</label>
-            </div>
-            <div class="input-group-append">
-            <span class="input-group-text" id="">Upload</span>
-            </div>
-            </div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="#">Instacram</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor03" aria-controls="navbarColor03" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      
+        <div class="collapse navbar-collapse" id="navbarColor03">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" id='feedLink' href="#">Feed</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" id='meLink' href="#">Me</a>
+            </li>
+          </ul>
         </div>
-    </div>
     </nav>
 </header>
 
@@ -60,7 +58,7 @@
     <div class="col-md-4">
     <section class="login-form">
     <form  role="login">
-        <img src="./images/instacram.png" style="width:200px;height:100px;" class="img-responsive" alt="" />
+        <img src="./images/instacram.png" style="width:250px;height:75px;" class="img-responsive" alt="" />
         <input type="username" id="name" placeholder="Full Name" required class="form-control input-lg" style="display: none;"/>
         <input type="useremail" id="useremail" placeholder="Email" required class="form-control input-lg" style="display: none;"/>
         <input type="username" id="username" placeholder="Username" required class="form-control input-lg" />

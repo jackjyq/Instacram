@@ -103,3 +103,7 @@ abbr {
     font-weight: bold;
     text-decoration:none !important;
 }
+
+.nav-item {
+    border: none;
+}
