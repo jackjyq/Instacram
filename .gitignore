@@ -6,7 +6,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 reset_database.py
-*.sqlite3
 
 # Runtime data
 pids
@@ -75,5 +74,4 @@ vgcore.*
 *.pyc
 __pycache__
 *.tar
-frontend/.vstags
-GitLog2Diary.pl
+.vstags
