@@ -23,7 +23,7 @@ my @git_log = `git log --author="$author" --pretty=format:"%ct %s"
 `;
 my $total_minutes = 0;
 foreach my $log (@git_log) {
-    if ($log =~ m|(^\d{10}) (\d\d):(\d\d) (.*$)|) {
+    if ($log =~ m|(^\d{10}) (\d{0,2}):(\d\d) (.*$)|) {
         # generate stop time
         my $stop_epoc = $1;
         unshift @stop, epoc_to_time($stop_epoc);
