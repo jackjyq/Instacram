@@ -102,13 +102,14 @@
             <div class="card-footer text-muted">
                 <i class="far fa-heart" id="showLike" data-toggle="modal" data-target="#likeModal" >0</i>
                 <i class="far fa-comment-alt">0</i>
-                <i class="far fa-thumbs-up" id="toggleLike" style="float: right"></i>
+                <i id="toggleLike" style="float: right"></i>
                 <!-- <i class="fas fa-thumbs-up"></i> -->
             </div>
             <ul class="list-group list-group-flush">
               <!-- <li class="list-group-item"><abbr title="published by">Author: </abbr><span>comment goes here</span></li> -->
             </ul>
             <input class="form-control form-control-sm" placeholder="Add a comment..." id="inputSmall" type="text">
+            <div style="display:none">id</div>
           </div>
     </div>
 
@@ -127,8 +128,8 @@
                     <h4 class="modal-title"><i></i></h4>
                 </div>
             <div class="modal-body">
-                <ul class="list-group list-group-flush" style='display: none'>
-                    <li class="list-group-item"><span>Author</span><span> likes your post</span></li>
+                <ul class="list-group list-group-flush">
+                    <!-- <li class="list-group-item"><span>Author</span><span> likes your post</span></li> -->
                 </ul>
             </div>
             </div>

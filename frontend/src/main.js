@@ -34,12 +34,59 @@ document.addEventListener('click', click => {
     } else if (click.target.id === 'logOutLink'){
         signOut();
     } else if (click.target.id === 'showLike'){
+        const postId = click.target.parentElement.parentElement.children[6].innerHTML;
         const likeNumber = click.target.firstChild.data;
-        getLikeModal(likeNumber);
+        getLikeModal(postId, likeNumber);
+    } else if (click.target.id === 'toggleLike'){
+        const postId = click.target.parentElement.parentElement.children[6].innerHTML;
+        const section = click.target.parentElement;
+        toggleLike(postId, section);
     } else {
         ;
     }
 })
+
+
+function toggleLike(postId, section) {
+    console.log(section);
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = { 
+        method: 'PUT', 
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    const likeNumber = section.children[0].innerText;
+    // console.log(likeNumber);
+    if (section.children[2].className === 'far fa-thumbs-up') {
+        // console.log('like');
+        const url = HOST + '/post/like?id=' + postId;
+        fetch(url, fetchData)
+        .then(res => res.json())
+        .then(json => {
+            if (json['message'] === 'success') {
+                section.children[0].innerText = Number(likeNumber) + 1;
+                section.children[2].setAttribute('class', 'fas fa-thumbs-up');
+            }
+        })
+    } else if (section.children[2].className === 'fas fa-thumbs-up') {
+        // console.log('unlike');
+        const url = HOST + '/post/unlike?id=' + postId;
+        fetch(url, fetchData)
+        .then(res => res.json())
+        .then(json => {
+            if (json['message'] === 'success') {
+                section.children[0].innerText = Number(likeNumber) - 1;
+                section.children[2].setAttribute('class', 'far fa-thumbs-up');
+            }
+        })
+    } else {
+        console.log('Toggle Like failed');
+    }
+}
+
+
 
 
 function signOut() {
@@ -120,6 +167,7 @@ function trySignUp() {
             if (json["token"] === undefined) {
                 api.signInfo("The username isn't available. Please try another.");
             } else {
+                // console.log('I am here')
                 window.localStorage.setItem('AUTH_KEY', json["token"]);
                 getUserFeed();
             }
@@ -131,6 +179,10 @@ function trySignUp() {
 function getUserFeed() {
     api.changeUiTo(3);
     getUserBoard();
+    const feed = document.getElementById('large-feed');
+    while (feed.children[1]) {
+        feed.removeChild(feed.children[1]);
+    }
     const url = HOST + '/user/feed';
     const key = window.localStorage.getItem('AUTH_KEY');
     const fetchData = { 
@@ -151,31 +203,80 @@ function getUserFeed() {
                 
                 return parent;
     
-            }, document.getElementById('large-feed'))
+            }, feed)
         }
     })
 }
 
 
-function getLikeModal(likeNumber) {
+function getLikeModal(id, likeNumber) {
     const modal = document.getElementById('likeModal').children[0].children[0];
     const overview = modal.children[0].children[0].children[0];
-    if (likeNumber === 0) {
+    const list = modal.children[1].children[0];
+    while (list.firstChild) {
+        list.removeChild(list.firstChild);
+    }
+    if (likeNumber === '0') {
         overview.setAttribute('class', "far fa-frown");
         overview.innerText = ' No body likes your post';
     } else {
         overview.setAttribute('class', "far fa-smile-beam");
-        if (likeNumber === 1) {
+        if (likeNumber === '1') {
             overview.innerText = ' ' + likeNumber + ' person likes your post';
         } else {
             overview.innerText = ' ' + likeNumber + ' person like your post';
         }
-       
-
-
-        
+        const url = HOST + '/post?id=' + id;
+        const key = window.localStorage.getItem('AUTH_KEY');
+        const fetchData = { 
+            method: 'GET', 
+            headers: {
+                "accept": "application/json",
+                "Authorization": 'Token ' + key
+            }
+        };
+        fetch(url, fetchData)
+        .then(res => res.json())
+        .then(json => {
+            if (json["id"] == id) {
+                for (const likeId of json.meta.likes) {
+                    updateLikeModal(likeId, list);
+                }
+            } else {
+                ;
+            }
+        })
     }
 }
+
+
+
+function updateLikeModal(id, list) {
+    const url = HOST + '/user?id=' + id;
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = { 
+        method: 'GET', 
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        if (json["id"] == id) {
+            // <li class="list-group-item">Author likes your post</li>
+            const li = document.createElement('li');
+            li.setAttribute('class', 'list-group-item d-flex justify-content-between align-items-center');
+            li.innerHTML = json.name + ' likes your post';
+            list.appendChild(li);
+        } else {
+            ;
+        }
+    })
+}
+
+
 
 
 

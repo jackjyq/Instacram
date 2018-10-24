@@ -35,7 +35,7 @@ export function createElement(tag, data, options = {}) {
  * @returns {HTMLElement}
  */
 export function createPostTile(post) {
-    // console.log(post)
+    // console.log(post);
     const origin = document.getElementById('large-feed').children[0];
     const section = origin.cloneNode(true);
     section.removeAttribute('style');
@@ -46,12 +46,33 @@ export function createPostTile(post) {
     section.children[2].src = 'data:image/png;base64,' + post.src;
     section.children[3].children[0].innerText =  post.meta.likes.length;
     section.children[3].children[1].innerText = post.comments.length;
+    // set like button
+    const url = 'http://localhost:5000' + '/user';
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = { 
+        method: 'GET', 
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        if (post.meta.likes.includes(json["id"])) {
+            section.children[3].children[2].setAttribute('class', "fas fa-thumbs-up");
+        } else {
+            section.children[3].children[2].setAttribute('class', "far fa-thumbs-up");
+        }
+    })
+    // set comment aera
     post.comments.reduce((parent, comment) => {
         parent.appendChild(createComments(comment));
         // console.log(comment)
         return parent;
 
     }, section.children[4])
+    section.children[6].innerHTML = post.id;
     return section;
 }
 
