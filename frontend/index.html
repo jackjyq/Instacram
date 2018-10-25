@@ -45,7 +45,7 @@
           </ul>
 
         <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" placeholder="Username" type="text">
+            <input class="form-control mr-sm-2" placeholder="Username" id='searchUserInput' type="text">
             <button class="btn btn-secondary my-2 my-sm-0" id='searchUser' type="submit">Search</button>
         </form>
         </div>
@@ -151,10 +151,11 @@
                     <label for="exampleTextarea">Description Text</label>
                     <grammarly-ghost spellcheck="false"><div style="position: absolute; color: transparent; overflow: hidden; white-space: pre-wrap; box-sizing: border-box; height: 93.3333px; width: 540px; z-index: 0; border-width: 0.666667px; border-style: solid; padding: 6px 12px; margin: 32px 0px 0px; background: rgb(255, 255, 255) none repeat scroll 0% 0%; line-height: 24px; top: 0px; left: 0px;" data-id="93ba4fe7-e1ee-2c6f-50da-8de63505d00d" data-gramm_id="93ba4fe7-e1ee-2c6f-50da-8de63505d00d" data-gramm="gramm" data-gramm_editor="true" class="gr_ver_2" gramm="true" contenteditable="true"><span style="display: inline-block; color: transparent; overflow: hidden; text-align: left; float: initial; clear: none; box-sizing: border-box; vertical-align: baseline; white-space: pre-wrap; width: 100%; margin: 0px; padding: 0px; border: 0px none; font-size: 16px; font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, Roboto, &quot;Helvetica Neue&quot;, Arial, sans-serif, &quot;Apple Color Emoji&quot;, &quot;Segoe UI Emoji&quot;, &quot;Segoe UI Symbol&quot;, &quot;Noto Color Emoji&quot;; font-weight: 400; letter-spacing: normal; text-shadow: none; height: 92px;"></span><br></div></grammarly-ghost><textarea class="form-control" id='descriptionText' rows="3" data-gramm="true" data-txt_gramm_id="93ba4fe7-e1ee-2c6f-50da-8de63505d00d" data-gramm_id="93ba4fe7-e1ee-2c6f-50da-8de63505d00d" spellcheck="false" data-gramm_editor="true" style="background: transparent none repeat scroll 0% 0% !important; z-index: auto; position: relative; line-height: 24px; font-size: 16px; transition: none 0s ease 0s;"></textarea><grammarly-btn><div style="z-index: 2; transform: translate(510px, 621.2px);" class="_1BN1N Kzi1t _2DJZN"><div class="_1HjH7"><div title="Protected by Grammarly" class="_3qe6h">&nbsp;</div></div></div></grammarly-btn>
                     </div>
-
-                    </fieldset>
+                    <div class="form-group" style='text-align: center; color: red;'>
+                        choose a picture and fill the description
+                    </div>
                     <button type="submit" class="btn btn-primary" id='postNew'>Post</button>
-                    </fieldset>
+                </fieldset>
                 </form>
             </div>
             <div class="tab-pane fade" id="following">

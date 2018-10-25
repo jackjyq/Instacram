@@ -49,10 +49,25 @@ document.addEventListener('click', click => {
         updateProfile();
     } else if (click.target.id === 'postNew'){
         updatePicture();
-    }  else {
+    } else if (click.target.id === 'searchUser'){
+        const username = document.getElementById('searchUserInput').value;
+        getUserPage(username);
+    } else if (click.target.id === 'toggleFollow'){
+        toggleFollow();
+    } else {
         ;
     }
 })
+
+
+document.addEventListener('keypress', key => {
+    if (key.key === "Enter" && key.target.id === "inputSmall") {
+        const comment = key.target.value;
+        const id = key.target.nextElementSibling.innerText;
+        updateComment(comment, id);
+    }
+})
+
 
 
 function toggleLike(postId, section) {
@@ -255,7 +270,12 @@ function getMePage() {
             userContent[2].innerText = json.posts.length + " posts | "
                                        + json.followed_num + " followers | "
                                        + json.following.length + " following";
-    
+            
+            // update following tab
+            for (const userId of json.following) {
+                updateMeFollow(userId);
+            }
+
             // show the userboard
             userboard.removeAttribute('style');
             // update the feed
@@ -265,6 +285,116 @@ function getMePage() {
         }
     })
 }
+
+
+
+function getUserPage(username) {
+    // clean the feed
+    const feed = document.getElementById('large-feed');
+    while (feed.children[1]) {
+        feed.removeChild(feed.children[1]);
+    }
+    // get user
+    const url = HOST + '/user/?username=' + username;
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = { 
+        method: 'GET', 
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        resetUserBoard();
+        const userboard = document.getElementById('userboard');
+        const userContent = userboard.children[1].children[0].children[0].children;
+        if (json["id"] === undefined) {
+            // user not found
+            userContent[0].innerText = 'User Not Found';
+            userContent[1].innerText = '';
+            userContent[2].innerText = '';
+        } else {
+            // user has found
+            userContent[0].innerText = json.name;
+            userContent[1].innerText = json.email;
+            userContent[2].innerText = json.posts.length + " posts | "
+                                       + json.followed_num + " followers | "
+                                       + json.following.length + " following";
+            // change the follow button
+            updateFollowButton(json["id"], json.username);
+
+            // show the userboard
+            userboard.removeAttribute('style');
+            // update the feed
+            for (const postId of json.posts) {
+                getUserPosts(postId);
+            }
+        }
+    })
+}
+
+
+function updateFollowButton(id, username) {
+    const followButton = userboard.children[1].children[0].children[0].children[3];
+    // followButton.setAttribute('style', 'display: none;');
+    // get current user information
+    const url = HOST + '/user/';
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = { 
+        method: 'GET', 
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        if (json.following.includes(id)) {
+            // need to unfollow
+            followButton.innerHTML = '<span>Unfollow</span><span style="display: none;">' + username + '</span>';
+        } else {
+            // need to follow
+            followButton.innerHTML = '<span>Follow</span><span style="display: none;">' + username + '</span>';
+        }
+        followButton.removeAttribute('style');
+    });
+}
+
+
+
+
+
+
+
+function updateMeFollow(userId) {
+    const follow = document.getElementById('following').children[0].children[0].children[1];
+    const url = HOST + '/user?id=' + userId;
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = { 
+        method: 'GET', 
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        if (json["id"] == userId) {
+            // <li class="list-group-item">User Name</li>
+            const li = document.createElement('li');
+            li.setAttribute('class', 'list-group-item');
+            li.innerText = json.name;
+            follow.appendChild(li);
+        } else {
+            console.log('something wrong in updateMeFollow');
+        }
+    })
+}
+
 
 
 
@@ -282,12 +412,20 @@ function resetUserBoard() {
     contentDivs[0].setAttribute('class', 'tab-pane fade active show');
 
     // clean warning in edit tab
-    const warning = userboard.children[1].children[1].children[0][0].children[4];
-    warning.innerText = '';
+    const userboard_warning = userboard.children[1].children[1].children[0][0].children[4];
+    userboard_warning.innerText = '';
+    const post_warning = document.getElementById('post').children[0].children[0].children[3];
+    post_warning.innerText = '';
 
     // disable the follow button in user page
     const followButton = userboard.children[1].children[0].children[0].children[3];
     followButton.setAttribute('style', 'display: none;');
+
+    // refresh follow tab
+    const follow = document.getElementById('following').children[0].children[0].children[1];
+    while (follow.firstChild) {
+    follow.removeChild(follow.firstChild);
+    }
 
     // disable the three board
     const editTag = userboard.children[0].children[1];
@@ -297,6 +435,8 @@ function resetUserBoard() {
     const followingTag = userboard.children[0].children[3];
     followingTag.children[0].setAttribute('class', 'nav-link disabled');
 }
+
+
 
 
 function updateProfile() {
@@ -339,43 +479,50 @@ function updateProfile() {
 function updatePicture() {
     const uploadFile= document.getElementById('uploadFile').files[0];
     const descriptionText = document.getElementById('descriptionText').value;
+    const warning = document.getElementById('post').children[0].children[0].children[3];
 
     const validFileTypes = [ 'image/jpeg', 'image/png', 'image/jpg' ]
     const valid = validFileTypes.find(type => type === uploadFile.type);
     
     // bad data, let's walk away
-    if (!valid)
+    if (!valid) {
+        warning.innerText = 'invalid picture';
         return false;
-
+    }
     // if we get here we have a valid image
     const reader = new FileReader();
     reader.onload = function(event) {
         // The file's text will be printed here
         const src = event.target.result;
-        console.log(src);
 
         // post new image
-        // const url = HOST + '/post';
-        // const key = window.localStorage.getItem('AUTH_KEY');
-        // const fetchData = { 
-        //     method: 'POST',
-        //     body: JSON.stringify({
-        //         "description_text": descriptionText,
-        //         "src": src,
-        //       }),
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         "accept": "application/json",
-        //         "Authorization": 'Token ' + key
-        //     }
-        // };
-        // fetch(url, fetchData)
-        // .then(res => res.json())
-        // .then(json => {
-        //     console.log(json);
-        // })
+        const url = HOST + '/post';
+        const key = window.localStorage.getItem('AUTH_KEY');
+        const fetchData = { 
+            method: 'POST',
+            body: JSON.stringify({
+                "description_text": descriptionText,
+                "src": src.slice(23),
+              }),
+            headers: {
+                "Content-Type": "application/json",
+                "accept": "application/json",
+                "Authorization": 'Token ' + key
+            }
+        };
+        fetch(url, fetchData)
+        .then(res => res.json())
+        .then(json => {
+            if (json['post_id'] === undefined) {
+                warning.innerText = json['message'];
+                return false;
+            } else {
+                getMePage();
+            }
+        })
       }
     reader.readAsDataURL(uploadFile);
+
 }
 
 
@@ -477,10 +624,68 @@ function updateLikeModal(id, list) {
 
 
 
+function updateComment(comment, id) {
+    const url = HOST + '/post/comment/?id=' + id;
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = { 
+        method: 'PUT',
+        body: JSON.stringify({
+            "comment": comment
+          }),
+        headers: {
+            "Content-Type": "application/json",
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        if (json.message === 'success') {
+            getMePage();
+        } else {
+            console.log(json);
+        }
+    })
+}
 
 
-
-
+function toggleFollow() {
+    const followButton = userboard.children[1].children[0].children[0].children[3];
+    const state = followButton.children[0].innerText;
+    const username = followButton.children[1].innerText;
+    // generate message
+    let url;
+    if (state === 'Follow') {
+        url = HOST + '/user/follow?username=' + username;
+    } else if (state === 'Unfollow') {
+        url = HOST + '/user/unfollow?username=' + username;
+    } else {
+        return false;
+    }
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = { 
+        method: 'PUT',
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        if (json.message === 'success') {
+            if (state === 'Follow') {
+                followButton.innerHTML = '<span>Unfollow</span><span style="display: none;">' + username + '</span>';
+            } else {
+                followButton.innerHTML = '<span>Follow</span><span style="display: none;">' + username+ '</span>';
+            }
+            getUserPage(username);
+        } else {
+            console.log(json);
+        }
+    })
+}
 
 
 

@@ -28,7 +28,8 @@ foreach my $log (@git_log) {
         my $stop_epoc = $1;
         unshift @stop, epoc_to_time($stop_epoc);
         # generate start time
-        my $hour = $2;
+        my $hour = 0;
+        $hour = $2 if ($2 ne '');
         my $minute = $3;
         my $start_epoc = $stop_epoc - 3600 * $hour - 60 * $minute;
         unshift @start, epoc_to_time($start_epoc);
