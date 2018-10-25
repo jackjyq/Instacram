@@ -34,7 +34,7 @@ class Login(Resource):
 @auth.route('/signup', strict_slashes=False)
 class Signup(Resource):
     @auth.response(200, 'Success',token_details)
-    @auth.response(400, 'Malformed Request')
+    @auth.response(400, 'Missing Username/Password')
     @auth.response(409, 'Username Taken')
     @api.expect(signup_details)
     @auth.doc(description='''
@@ -48,8 +48,8 @@ class Signup(Resource):
 
         if db.exists('USER').where(username=un):
             abort(409, 'Username Taken')
-        if ps == '':
-            abort(400, 'Password cannot be empty')
+        if un == '' or ps == '':
+            abort(400, 'Username and password cannot be empty')
 
         t = gen_token()
         db_r = db.insert('USER').with_values(
