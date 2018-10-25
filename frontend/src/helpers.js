@@ -98,27 +98,20 @@ function createComments(comment) {
 
 
 // Given an input element of type=file, grab the data uploaded for use
-export function uploadImage(event) {
-    const [ file ] = event.target.files;
-
+export function imageToText(file) {
     const validFileTypes = [ 'image/jpeg', 'image/png', 'image/jpg' ]
     const valid = validFileTypes.find(type => type === file.type);
-
+    
     // bad data, let's walk away
     if (!valid)
         return false;
-    
+
     // if we get here we have a valid image
     const reader = new FileReader();
-    
-    reader.onload = (e) => {
-        // do something with the data result
-        const dataURL = e.target.result;
-        const image = createElement('img', null, { src: dataURL });
-        document.body.appendChild(image);
-    };
-
-    // this returns a base64 image
+    reader.onload = function(event) {
+        // The file's text will be printed here
+        console.log(event.target.result);
+      }
     reader.readAsDataURL(file);
 }
 

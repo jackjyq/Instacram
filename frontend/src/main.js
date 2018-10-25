@@ -1,5 +1,5 @@
 // importing named exports we use brackets
-import { createPostTile, uploadImage } from './helpers.js';
+import { createPostTile, imageToText } from './helpers.js';
 
 // when importing 'default' exports, use below syntax
 import API from './api.js';
@@ -43,8 +43,12 @@ document.addEventListener('click', click => {
         toggleLike(postId, section);
     } else if (click.target.id === 'feedLink'){
         getUserFeed();
-    }  else if (click.target.id === 'meLink'){
-        getUserPage();
+    } else if (click.target.id === 'meLink'){
+        getMePage();
+    } else if (click.target.id === 'updateProfile'){
+        updateProfile();
+    } else if (click.target.id === 'postNew'){
+        updatePicture();
     }  else {
         ;
     }
@@ -208,19 +212,14 @@ function getUserFeed() {
 }
 
 
-function getUserPage(userId) {
+function getMePage() {
     // clean the feed
     const feed = document.getElementById('large-feed');
     while (feed.children[1]) {
         feed.removeChild(feed.children[1]);
     }
     // get user
-    let url;
-    if (userId === undefined) {
-        url = HOST + '/user/';
-    } else {
-        url = HOST + '/user/?id=' + userId;
-    }
+    const url = HOST + '/user/';
     const key = window.localStorage.getItem('AUTH_KEY');
     const fetchData = { 
         method: 'GET', 
@@ -235,21 +234,150 @@ function getUserPage(userId) {
         if (json["id"] === undefined) {
             signOut();
         } else {
-            // console.log(json);
-            // const userboard = document.getElementById('userboard');
-            // userboard.children[0].children[0].innerHTML = json.name;
-            // userboard.children[0].children[1].children[0].innerHTML = 
-            //         json.posts.length + " posts | "
-            //         + json.followed_num + " followers | "
-            //         + json.following.length + " following";
+            // update userboard
+            resetUserBoard();
+            const userboard = document.getElementById('userboard');
+            // active the three board
+            const editTag = userboard.children[0].children[1];
+            editTag.children[0].setAttribute('class', 'nav-link');
+            const postTag = userboard.children[0].children[2];
+            postTag.children[0].setAttribute('class', 'nav-link');
+            const followingTag = userboard.children[0].children[3];
+            followingTag.children[0].setAttribute('class', 'nav-link');
+
+            
+            
+            // update UserContent
+            const userContent = userboard.children[1].children[0].children[0].children;
+            // console.log(userboard);
+            userContent[0].innerText = json.name;
+            userContent[1].innerText = json.email;
+            userContent[2].innerText = json.posts.length + " posts | "
+                                       + json.followed_num + " followers | "
+                                       + json.following.length + " following";
+    
+            // show the userboard
             userboard.removeAttribute('style');
-            // for (const postId of json.posts) {
-            //     getUserPosts(postId);
-            ;
-            // }
+            // update the feed
+            for (const postId of json.posts) {
+                getUserPosts(postId);
+            }
         }
     })
 }
+
+
+
+function resetUserBoard() {
+    const userboard = document.getElementById('userboard');
+    // set the home page
+    const userTag = userboard.children[0].children[0];
+    userTag.children[0].setAttribute('class', 'nav-link active show');
+    
+    // set home content page
+    const contentDivs = userboard.children[1].children;
+    for (const div of contentDivs) {
+        div.setAttribute('class', 'tab-pane fade');
+    } 
+    contentDivs[0].setAttribute('class', 'tab-pane fade active show');
+
+    // clean warning in edit tab
+    const warning = userboard.children[1].children[1].children[0][0].children[4];
+    warning.innerText = '';
+
+    // disable the follow button in user page
+    const followButton = userboard.children[1].children[0].children[0].children[3];
+    followButton.setAttribute('style', 'display: none;');
+
+    // disable the three board
+    const editTag = userboard.children[0].children[1];
+    editTag.children[0].setAttribute('class', 'nav-link disabled');
+    const postTag = userboard.children[0].children[2];
+    postTag.children[0].setAttribute('class', 'nav-link disabled');
+    const followingTag = userboard.children[0].children[3];
+    followingTag.children[0].setAttribute('class', 'nav-link disabled');
+}
+
+
+function updateProfile() {
+    const updateEmail= document.getElementById('updateEmail').value;
+    const updatePassword= document.getElementById('updatePassword').value;
+    const updateName= document.getElementById('updateName').value;
+    const warning = userboard.children[1].children[1].children[0][0].children[4];
+    if (!updateEmail || !updatePassword || !updateName) {
+        warning.innerText = "Please enter all required fields"
+    } else {
+        const url = HOST + '/user';
+        const key = window.localStorage.getItem('AUTH_KEY');
+        const fetchData = { 
+            method: 'PUT',
+            body: JSON.stringify({
+                "email": updateEmail,
+                "name": updateName,
+                "password": updatePassword
+              }),
+            headers: {
+                "Content-Type": "application/json",
+                "accept": "application/json",
+                "Authorization": 'Token ' + key
+            }
+        };
+        fetch(url, fetchData)
+        .then(res => res.json())
+        .then(json => {
+            if (json.msg === 'success') {
+                getMePage();
+            } else {
+                warning.innerText = json.msg;
+            }
+        })
+    }
+}
+
+
+
+function updatePicture() {
+    const uploadFile= document.getElementById('uploadFile').files[0];
+    const descriptionText = document.getElementById('descriptionText').value;
+
+    const validFileTypes = [ 'image/jpeg', 'image/png', 'image/jpg' ]
+    const valid = validFileTypes.find(type => type === uploadFile.type);
+    
+    // bad data, let's walk away
+    if (!valid)
+        return false;
+
+    // if we get here we have a valid image
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        // The file's text will be printed here
+        const src = event.target.result;
+        console.log(src);
+
+        // post new image
+        // const url = HOST + '/post';
+        // const key = window.localStorage.getItem('AUTH_KEY');
+        // const fetchData = { 
+        //     method: 'POST',
+        //     body: JSON.stringify({
+        //         "description_text": descriptionText,
+        //         "src": src,
+        //       }),
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         "accept": "application/json",
+        //         "Authorization": 'Token ' + key
+        //     }
+        // };
+        // fetch(url, fetchData)
+        // .then(res => res.json())
+        // .then(json => {
+        //     console.log(json);
+        // })
+      }
+    reader.readAsDataURL(uploadFile);
+}
+
 
 
 
