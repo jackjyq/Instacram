@@ -93,7 +93,7 @@
                 <a class="nav-link disabled" data-toggle="tab" href="#edit">Edit</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link disabled" data-toggle="tab" href="#post">Post</a>
+                <a class="nav-link disabled" data-toggle="tab" href="#post">Upload</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link disabled" data-toggle="tab" href="#following">Following</a>
@@ -133,14 +133,14 @@
                     </div>
                 </fieldset>
                 <fieldset>
-                    <button type="submit" class="btn btn-primary" id='updateProfile'>Update</button>
+                    <button type="submit" class="btn btn-primary" id='updateProfile'>Post</button>
                 </fieldset>
                 </form>
             </div>
             <div class="tab-pane fade" id="post">
                 <form class="card-body">
                 <fieldset>
-                    <legend>Post New Picture</legend>
+                    <legend>Post Picture</legend>
   
                     <div class="form-group">
                     <label for="exampleInputFile">File input</label>
@@ -154,7 +154,7 @@
                     <div class="form-group" style='text-align: center; color: red;'>
                         choose a picture and fill the description
                     </div>
-                    <button type="submit" class="btn btn-primary" id='postNew'>Post</button>
+                    <button type="submit" class="btn btn-primary" id='postNew'>Upload Post</button>
                 </fieldset>
                 </form>
             </div>
@@ -186,13 +186,14 @@
                          and the icons are come from https://fontawesome.com
     -->
     <div class="card mb-3" style="display: none;">
-            <h3 class="card-header">Name</h3>
+            <a href='#'><h3 class="card-header" id='toUserPage' >Name</h3></a>
             <div class="card-body">
               <h5 class="card-title">The post description text</h5>
               <h6 class="card-subtitle text-muted"><small>published by time</small></h6>
-              <button type="button" class="btn btn-secondary" style="display: none;">Delete</button>
+              <button type="button" class="btn btn-secondary" style="display: none;" id='deletePost'>Delete</button>
+              <a class="btn btn-primary" href='#' style="display: none;" id='updatePost'>Update</a>
             </div>
-            <img style="height: 640px; width: 640px; display: block;" src="" alt="Card image">
+            <a href='#'><img style="height: 640px; width: 640px; display: block;" src="" alt="Card image" id='toUserPage'></a>
             <div class="card-footer text-muted">
                 <i class="far fa-heart" id="showLike" data-toggle="modal" data-target="#likeModal" >0</i>
                 <i class="far fa-comment-alt">0</i>

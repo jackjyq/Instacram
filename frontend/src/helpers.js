@@ -39,11 +39,11 @@ export function createPostTile(post) {
     const origin = document.getElementById('large-feed').children[0];
     const section = origin.cloneNode(true);
     section.removeAttribute('style');
-    section.children[0].innerHTML = post.meta.author;
+    section.children[0].children[0].innerHTML = post.meta.author;
     section.children[1].children[0].innerText = post.meta.description_text;
     const publishDate = new Date(post.meta.published * 1000);
     section.children[1].children[1].children[0].innerText = 'published at ' + publishDate;
-    section.children[2].src = 'data:image/png;base64,' + post.src;
+    section.children[2].children[0].src = 'data:image/png;base64,' + post.src;
     section.children[3].children[0].innerText =  post.meta.likes.length;
     section.children[3].children[1].innerText = post.comments.length;
     // set like button
@@ -73,6 +73,27 @@ export function createPostTile(post) {
 
     }, section.children[4])
     section.children[6].innerHTML = post.id;
+    
+    // inactive comment and active delete for UserPage Mode
+    const userboard = document.getElementById('userboard');
+    const followButton = userboard.children[1].children[0].children[0].children[3];
+    // console.log(followButton)
+    if (userboard.style.display === "none") {
+        // in feed page
+        section.children[5].removeAttribute('style'); // active comment aera
+        section.children[1].children[2].setAttribute('style', 'display: none;'); // inactive delete button
+        section.children[1].children[3].setAttribute('style', 'display: none;'); // inactive update button
+    } else if (followButton.style.display === "none") {
+        // in My User Page
+        section.children[5].setAttribute('style', 'display: none;'); // inactive comment aera
+        section.children[1].children[2].removeAttribute('style'); // active delete button
+        section.children[1].children[3].removeAttribute('style'); // active update button
+    } else {
+        // in Other User Page
+        section.children[5].setAttribute('style', 'display: none;'); // inactive comment aera
+        section.children[1].children[2].setAttribute('style', 'display: none;'); // inactive delete button
+        section.children[1].children[3].setAttribute('style', 'display: none;'); // inactive update button
+    }
     return section;
 }
 

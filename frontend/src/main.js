@@ -9,8 +9,7 @@ const api  = new API();
 const HOST = 'http://localhost:5000';
 
 
-
-
+window.localStorage.setItem('POST_ID', null);
 if (window.localStorage.getItem('AUTH_KEY') === null) {
     api.changeUiTo(1);
 } else {
@@ -18,8 +17,8 @@ if (window.localStorage.getItem('AUTH_KEY') === null) {
 }
 
 // loading
-// User State login: 1  
-//            registration: 2 
+// User State login: 1
+//            registration: 2
 //            feed interface:3
 document.addEventListener('click', click => {
     // console.log(click.target.id);
@@ -54,7 +53,17 @@ document.addEventListener('click', click => {
         getUserPage(username);
     } else if (click.target.id === 'toggleFollow'){
         toggleFollow();
-    } else {
+    } else if (click.target.id === 'deletePost'){
+        const postId = click.target.parentElement.parentElement.children[6].innerHTML;
+        deletePost(postId);
+    } else if (click.target.id === 'toUserPage'){
+        const username = click.target.parentElement.parentElement.children[0].children[0].innerHTML;
+        getUserPage(username);
+    } else if (click.target.id === 'updatePost'){
+        const postId = click.target.parentElement.parentElement.children[6].innerHTML;
+        window.localStorage.setItem('POST_ID', postId);
+        changeToPostTab();
+    }  else {
         ;
     }
 })
@@ -69,25 +78,53 @@ document.addEventListener('keypress', key => {
 })
 
 
-document.addEventListener('scroll', bottomCheck)
+
 
 
 
 function bottomCheck() {
-    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 100) {
-        alert('我是有底线的');
-        document.removeEventListener('scroll', bottomCheck);
+    const userboard = document.getElementById('userboard');
+    // in feed page
+    if (userboard.style.display === "none") {
+        // scroll to the bottom
+        if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 100) {
+            // get the number of cards
+            const card = document.getElementsByClassName("card mb-3");
+            const p = card.length - 1;
+            // disable scroll event listener, make sure function will not call twice
+            document.removeEventListener('scroll', bottomCheck);
+            // call funciton and append 1 card
+            appendUserFeed(p, 1);
+        }
     }
 }
 
+
+
+function deletePost(postId) {
+    const url = HOST + '/post/?id=' + postId;
+    const key = window.localStorage.getItem('AUTH_KEY');
+    const fetchData = {
+        method: 'DELETE',
+        headers: {
+            "accept": "application/json",
+            "Authorization": 'Token ' + key
+        }
+    };
+    fetch(url, fetchData)
+    .then(res => res.json())
+    .then(json => {
+        getMePage();
+    })
+}
 
 
 
 
 function toggleLike(postId, section) {
     const key = window.localStorage.getItem('AUTH_KEY');
-    const fetchData = { 
-        method: 'PUT', 
+    const fetchData = {
+        method: 'PUT',
         headers: {
             "accept": "application/json",
             "Authorization": 'Token ' + key
@@ -125,7 +162,7 @@ function toggleLike(postId, section) {
 
 
 function signOut() {
-    localStorage.clear();
+    window.localStorage.clear();
     api.changeUiTo(1);
 }
 
@@ -135,8 +172,8 @@ function trySignIn() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const url = HOST + '/auth/login';
-    const fetchData = { 
-        method: 'POST', 
+    const fetchData = {
+        method: 'POST',
         body: JSON.stringify({
             "username": username,
             "password": password
@@ -157,9 +194,9 @@ function trySignIn() {
             if (json["token"] === undefined) {
                 api.signInfo('Sorry, your password was incorrect. Please double-check your password.');
             } else {
-                console.log("Token " + json["token"]);
+                // console.log("Token " + json["token"]);
                 window.localStorage.setItem('AUTH_KEY', json["token"]);
-                getUserFeed();  
+                getUserFeed();
             }
         })
     }
@@ -176,8 +213,8 @@ function trySignUp() {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     const url = HOST + '/auth/signup';
-    const fetchData = { 
-        method: 'POST', 
+    const fetchData = {
+        method: 'POST',
         body: JSON.stringify({
             "username": username,
             "password": password,
@@ -213,14 +250,22 @@ function trySignUp() {
 
 function getUserFeed() {
     api.changeUiTo(3);
+    // clean the feed
     const feed = document.getElementById('large-feed');
     while (feed.children[1]) {
         feed.removeChild(feed.children[1]);
     }
-    const url = HOST + '/user/feed';
+    appendUserFeed(0, 3);
+}
+
+
+
+function appendUserFeed(p, n) {
+    const feed = document.getElementById('large-feed');
+    const url = HOST + '/user/feed?p=' + p + '&n=' + n;
     const key = window.localStorage.getItem('AUTH_KEY');
-    const fetchData = { 
-        method: 'GET', 
+    const fetchData = {
+        method: 'GET',
         headers: {
             "accept": "application/json",
             "Authorization": 'Token ' + key
@@ -236,9 +281,14 @@ function getUserFeed() {
                 parent.appendChild(createPostTile(post));
                 return parent;
             }, feed)
+            if (json["posts"].length !== 0) {
+                document.addEventListener('scroll', bottomCheck);
+            }
         }
     })
 }
+
+
 
 
 function getMePage() {
@@ -250,8 +300,8 @@ function getMePage() {
     // get user
     const url = HOST + '/user/';
     const key = window.localStorage.getItem('AUTH_KEY');
-    const fetchData = { 
-        method: 'GET', 
+    const fetchData = {
+        method: 'GET',
         headers: {
             "accept": "application/json",
             "Authorization": 'Token ' + key
@@ -274,8 +324,8 @@ function getMePage() {
             const followingTag = userboard.children[0].children[3];
             followingTag.children[0].setAttribute('class', 'nav-link');
 
-            
-            
+
+
             // update UserContent
             const userContent = userboard.children[1].children[0].children[0].children;
             // console.log(userboard);
@@ -284,7 +334,7 @@ function getMePage() {
             userContent[2].innerText = json.posts.length + " posts | "
                                        + json.followed_num + " followers | "
                                        + json.following.length + " following";
-            
+
             // update following tab
             for (const userId of json.following) {
                 updateMeFollow(userId);
@@ -303,6 +353,7 @@ function getMePage() {
 
 
 function getUserPage(username) {
+    document.removeEventListener('scroll', bottomCheck);
     // clean the feed
     const feed = document.getElementById('large-feed');
     while (feed.children[1]) {
@@ -311,8 +362,8 @@ function getUserPage(username) {
     // get user
     const url = HOST + '/user/?username=' + username;
     const key = window.localStorage.getItem('AUTH_KEY');
-    const fetchData = { 
-        method: 'GET', 
+    const fetchData = {
+        method: 'GET',
         headers: {
             "accept": "application/json",
             "Authorization": 'Token ' + key
@@ -356,8 +407,8 @@ function updateFollowButton(id, username) {
     // get current user information
     const url = HOST + '/user/';
     const key = window.localStorage.getItem('AUTH_KEY');
-    const fetchData = { 
-        method: 'GET', 
+    const fetchData = {
+        method: 'GET',
         headers: {
             "accept": "application/json",
             "Authorization": 'Token ' + key
@@ -387,8 +438,8 @@ function updateMeFollow(userId) {
     const follow = document.getElementById('following').children[0].children[0].children[1];
     const url = HOST + '/user?id=' + userId;
     const key = window.localStorage.getItem('AUTH_KEY');
-    const fetchData = { 
-        method: 'GET', 
+    const fetchData = {
+        method: 'GET',
         headers: {
             "accept": "application/json",
             "Authorization": 'Token ' + key
@@ -414,15 +465,16 @@ function updateMeFollow(userId) {
 
 function resetUserBoard() {
     const userboard = document.getElementById('userboard');
+
     // set the home page
     const userTag = userboard.children[0].children[0];
     userTag.children[0].setAttribute('class', 'nav-link active show');
-    
+
     // set home content page
     const contentDivs = userboard.children[1].children;
     for (const div of contentDivs) {
         div.setAttribute('class', 'tab-pane fade');
-    } 
+    }
     contentDivs[0].setAttribute('class', 'tab-pane fade active show');
 
     // clean warning in edit tab
@@ -463,7 +515,7 @@ function updateProfile() {
     } else {
         const url = HOST + '/user';
         const key = window.localStorage.getItem('AUTH_KEY');
-        const fetchData = { 
+        const fetchData = {
             method: 'PUT',
             body: JSON.stringify({
                 "email": updateEmail,
@@ -491,13 +543,16 @@ function updateProfile() {
 
 
 function updatePicture() {
+    const postId = window.localStorage.getItem('POST_ID');
+    window.localStorage.setItem('POST_ID', null);
+    // console.log(postId);
     const uploadFile= document.getElementById('uploadFile').files[0];
     const descriptionText = document.getElementById('descriptionText').value;
     const warning = document.getElementById('post').children[0].children[0].children[3];
 
     const validFileTypes = [ 'image/jpeg', 'image/png', 'image/jpg' ]
     const valid = validFileTypes.find(type => type === uploadFile.type);
-    
+
     // bad data, let's walk away
     if (!valid) {
         warning.innerText = 'invalid picture';
@@ -510,10 +565,20 @@ function updatePicture() {
         const src = event.target.result;
 
         // post new image
-        const url = HOST + '/post';
+        let url;
+        let method;
+        if (postId === 'null') {
+            // post new
+            url = HOST + '/post';
+            method = 'POST';
+        } else {
+            // change
+            url = HOST + '/post/?id=' + postId;
+            method = 'PUT';
+        }
         const key = window.localStorage.getItem('AUTH_KEY');
-        const fetchData = { 
-            method: 'POST',
+        const fetchData = {
+            method: method,
             body: JSON.stringify({
                 "description_text": descriptionText,
                 "src": src.slice(23),
@@ -527,12 +592,7 @@ function updatePicture() {
         fetch(url, fetchData)
         .then(res => res.json())
         .then(json => {
-            if (json['post_id'] === undefined) {
-                warning.innerText = json['message'];
-                return false;
-            } else {
-                getMePage();
-            }
+            getMePage();
         })
       }
     reader.readAsDataURL(uploadFile);
@@ -542,12 +602,31 @@ function updatePicture() {
 
 
 
+function changeToPostTab() {
+    const userboard = document.getElementById('userboard');
+    // set the home page
+    const userTag = userboard.children[0].children;
+    for (const div of userTag) {
+        div.children[0].setAttribute('class', 'nav-link');
+    }
+    // console.log(userTag)
+    userTag[2].children[0].setAttribute('class', 'nav-link active show');
+
+    // set home content page
+    const contentDivs = userboard.children[1].children;
+    for (const div of contentDivs) {
+        div.setAttribute('class', 'tab-pane fade');
+    }
+    contentDivs[2].setAttribute('class', 'tab-pane fade active show');
+}
+
+
 function getUserPosts(postId) {
     const feed = document.getElementById('large-feed');
     const url = HOST + '/post/?id=' + postId;
     const key = window.localStorage.getItem('AUTH_KEY');
-    const fetchData = { 
-        method: 'GET', 
+    const fetchData = {
+        method: 'GET',
         headers: {
             "accept": "application/json",
             "Authorization": 'Token ' + key
@@ -588,8 +667,8 @@ function getLikeModal(id, likeNumber) {
         }
         const url = HOST + '/post?id=' + id;
         const key = window.localStorage.getItem('AUTH_KEY');
-        const fetchData = { 
-            method: 'GET', 
+        const fetchData = {
+            method: 'GET',
             headers: {
                 "accept": "application/json",
                 "Authorization": 'Token ' + key
@@ -614,8 +693,8 @@ function getLikeModal(id, likeNumber) {
 function updateLikeModal(id, list) {
     const url = HOST + '/user?id=' + id;
     const key = window.localStorage.getItem('AUTH_KEY');
-    const fetchData = { 
-        method: 'GET', 
+    const fetchData = {
+        method: 'GET',
         headers: {
             "accept": "application/json",
             "Authorization": 'Token ' + key
@@ -641,7 +720,7 @@ function updateLikeModal(id, list) {
 function updateComment(comment, id) {
     const url = HOST + '/post/comment/?id=' + id;
     const key = window.localStorage.getItem('AUTH_KEY');
-    const fetchData = { 
+    const fetchData = {
         method: 'PUT',
         body: JSON.stringify({
             "comment": comment
@@ -678,7 +757,7 @@ function toggleFollow() {
         return false;
     }
     const key = window.localStorage.getItem('AUTH_KEY');
-    const fetchData = { 
+    const fetchData = {
         method: 'PUT',
         headers: {
             "accept": "application/json",
@@ -700,11 +779,3 @@ function toggleFollow() {
         }
     })
 }
-
-
-
-// Potential example to upload an image
-// const input = document.querySelector('input[type="file"]');
-
-// input.addEventListener('change', uploadImage);
-
