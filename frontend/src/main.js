@@ -69,6 +69,20 @@ document.addEventListener('keypress', key => {
 })
 
 
+document.addEventListener('scroll', bottomCheck)
+
+
+
+function bottomCheck() {
+    if ((window.innerHeight + window.scrollY) >= document.body.scrollHeight - 100) {
+        alert('我是有底线的');
+        document.removeEventListener('scroll', bottomCheck);
+    }
+}
+
+
+
+
 
 function toggleLike(postId, section) {
     const key = window.localStorage.getItem('AUTH_KEY');
@@ -642,7 +656,7 @@ function updateComment(comment, id) {
     .then(res => res.json())
     .then(json => {
         if (json.message === 'success') {
-            getMePage();
+            getUserFeed();
         } else {
             console.log(json);
         }
