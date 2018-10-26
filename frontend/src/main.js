@@ -359,6 +359,8 @@ function getUserPage(username) {
     while (feed.children[1]) {
         feed.removeChild(feed.children[1]);
     }
+
+
     // get user
     const url = HOST + '/user/?username=' + username;
     const key = window.localStorage.getItem('AUTH_KEY');
@@ -392,6 +394,9 @@ function getUserPage(username) {
 
             // show the userboard
             userboard.removeAttribute('style');
+            const followButton = userboard.children[1].children[0].children[0].children[3];
+            followButton.removeAttribute('style');
+            
             // update the feed
             for (const postId of json.posts) {
                 getUserPosts(postId);
@@ -424,7 +429,7 @@ function updateFollowButton(id, username) {
             // need to follow
             followButton.innerHTML = '<span>Follow</span><span style="display: none;">' + username + '</span>';
         }
-        followButton.removeAttribute('style');
+        
     });
 }
 
@@ -467,8 +472,12 @@ function resetUserBoard() {
     const userboard = document.getElementById('userboard');
 
     // set the home page
-    const userTag = userboard.children[0].children[0];
-    userTag.children[0].setAttribute('class', 'nav-link active show');
+    const userTag = userboard.children[0].children;
+    for (const div of userTag) {
+        div.children[0].setAttribute('class', 'nav-link');
+    }
+    // console.log(userTag)
+    userTag[0].children[0].setAttribute('class', 'nav-link active show');
 
     // set home content page
     const contentDivs = userboard.children[1].children;

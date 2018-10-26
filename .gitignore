@@ -75,3 +75,6 @@ vgcore.*
 __pycache__
 *.tar
 .vstags
+
+#db
+test.sqlite3
