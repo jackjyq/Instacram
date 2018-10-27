@@ -1,1 +1,33 @@
-13/10/18     18:00   18:15   put the first real entry in diary.txt (delete this line!)
+# Jack Jiang's Diary
+
+- Author: z5129432
+- Date: Sat Oct 27 10:24:24 2018
+- Generated
+    - at tabla10
+    - by https://github.com/Jiangyiqun/GitLog2Diary
+
+Start Time  |Stop Time   |Comments                                      
+------------|------------|----------------------------------------------
+22/10 09:15 |22/10 12:15 |start coding subset 0
+22/10 13:29 |22/10 14:29 |edit logo pictures
+22/10 14:14 |22/10 17:14 |coding signIn interface
+22/10 19:48 |22/10 21:48 |coding sign up and sign in interface
+23/10 09:24 |23/10 12:24 |still working on interface
+23/10 13:00 |23/10 14:18 |finish level 0
+23/10 14:29 |23/10 15:29 | add logout button
+23/10 15:29 |23/10 15:34 |fix bug on logout button
+23/10 20:00 |23/10 22:37 |work on lv1 login and registration
+24/10 09:00 |24/10 10:31 |finish lv1
+24/10 10:41 |24/10 12:26 |working on lv2 show likes
+24/10 13:00 |24/10 15:01 |working on lv2 likes
+24/10 17:37 |24/10 17:38 |add more track file
+24/10 17:25 |24/10 20:25 |add user profile page
+24/10 21:23 |24/10 23:23 |working on lv2 lv3 static part
+24/10 23:24 |24/10 23:29 |support 0~2 digit hour format
+25/10 09:37 |25/10 12:37 |working on upload
+25/10 18:48 |25/10 23:48 |work on userPage
+26/10 16:16 |26/10 17:16 |add button for delete post; add scroll detector
+26/10 23:48 |27/10 01:48 |finish lv3 without testing
+27/10 09:20 |27/10 10:20 |fix bugs and ready to submit
+
+Summery: 39 hours and 23 minutes
